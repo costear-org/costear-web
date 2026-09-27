@@ -40,12 +40,14 @@ import {
   usePrecioTransferencia,
   usePuntoIndiferencia,
   usePuntoCierre,
+  useRankingRotacion,
   useSegmentosAnalisis,
   useUpdateSegmentoAnalisis,
   type OwnerDashboardData,
   type OwnerDashboardNumber,
   type OwnerDashboardPending,
   type OwnerDashboardPendingArea,
+  type CriterioRankingRotacion,
 } from './owner-dashboard-hooks';
 import { CapiaReferences } from './CapiaReferences';
 import { PuntoCierrePanel } from './PuntoCierrePanel';
@@ -55,6 +57,7 @@ import { CapacidadOciosaPanel } from './CapacidadOciosaPanel';
 import { PlaneamientoResultadosPanel } from './PlaneamientoResultadosPanel';
 import { PuntoIndiferenciaPanel } from './PuntoIndiferenciaPanel';
 import { MezclaOptimaPanel } from './MezclaOptimaPanel';
+import { RankingRotacionPanel } from './RankingRotacionPanel';
 import { PrecioTransferenciaPanel } from './PrecioTransferenciaPanel';
 
 const SIN_DATOS = 'Sin datos';
@@ -493,6 +496,7 @@ function ProducedProgress({
 }
 
 export function OwnerDashboardPage() {
+  const [criterioRankingRotacion, setCriterioRankingRotacion] = useState<CriterioRankingRotacion>('rendimiento');
   const { periodId } = useSearch({ strict: false }) as { periodId?: string };
   const tablero = useOwnerDashboard(periodId);
   const data = tablero.data;
@@ -521,6 +525,7 @@ export function OwnerDashboardPage() {
   const equilibrioSectorial = useEquilibrioSectorial(companyId);
   const capacidadOciosa = useCapacidadOciosa(companyId);
   const mezclaOptima = useMezclaOptima(companyId);
+  const rankingRotacion = useRankingRotacion(companyId, periodId, criterioRankingRotacion);
   const precioTransferencia = usePrecioTransferencia(companyId);
   const planeamientoResultados = usePlaneamientoResultados(companyId);
   const puntoIndiferencia = usePuntoIndiferencia(companyId);
@@ -704,6 +709,18 @@ export function OwnerDashboardPage() {
             error={mezclaOptima.isError
               ? apiErrorMessage(mezclaOptima.error)
               : undefined}
+          />
+        </section>
+
+        <section aria-label="Ranking de comercio por rotación y margen">
+          <RankingRotacionPanel
+            data={rankingRotacion.data}
+            isLoading={companies.isLoading || rankingRotacion.isLoading}
+            error={rankingRotacion.isError
+              ? `No se pudo cargar el ranking de productos: ${apiErrorMessage(rankingRotacion.error)}`
+              : undefined}
+            criterio={criterioRankingRotacion}
+            onCriterioChange={setCriterioRankingRotacion}
           />
         </section>
 

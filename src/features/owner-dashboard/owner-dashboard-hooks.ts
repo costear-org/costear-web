@@ -344,6 +344,24 @@ export interface MezclaOptimaData {
   motivoSinRanking: string | null;
 }
 
+export type CriterioRankingRotacion = 'rendimiento' | 'margen';
+
+export interface RankingRotacionData {
+  ranking: Array<{
+    producto: string;
+    margen: number;
+    rotacion: number;
+    rendimiento: number;
+    rotacionOrigen: 'DECLARADA' | 'DEFAULT';
+  }>;
+  criterio: CriterioRankingRotacion;
+  advertencia: string | null;
+  excluidos: Array<{
+    producto: string;
+    motivo: 'ROTACION_SIN_DECLARAR';
+  }>;
+}
+
 export interface PrecioTransferenciaData {
   equilibrioACostoVariable: number;
   equilibrioAMercado: number;
@@ -521,6 +539,25 @@ export function useMezclaOptima(companyId: string | undefined) {
     },
     enabled: Boolean(companyId),
     retry: false,
+  });
+}
+
+export function useRankingRotacion(
+  companyId: string | undefined,
+  periodId: string | undefined,
+  criterio: CriterioRankingRotacion = 'rendimiento',
+) {
+  return useQuery({
+    queryKey: ['ranking-rotacion', companyId, periodId, criterio],
+    queryFn: async () => {
+      const params = criterio === 'rendimiento' ? { periodoId: periodId } : { periodoId: periodId, criterio };
+      const response = await api.get<{ data: RankingRotacionData }>(
+        `/companies/${companyId}/analisis/ranking-rotacion`,
+        { params },
+      );
+      return response.data.data;
+    },
+    enabled: Boolean(companyId && periodId),
   });
 }
 

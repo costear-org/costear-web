@@ -22,6 +22,7 @@ const {
   usePrecioTransferencia,
   usePuntoIndiferencia,
   usePuntoCierre,
+  useRankingRotacion,
   useSegmentosAnalisis,
   useUpdateSegmentoAnalisis,
 } = await import('./owner-dashboard-hooks');
@@ -140,6 +141,23 @@ describe('tablero del dueño', () => {
     await waitFor(() => expect(apiGet).toHaveBeenCalled());
 
     expect(apiGet).toHaveBeenCalledWith('/companies/company-1/analisis/mezcla-optima');
+  });
+
+  it('consulta el ranking de rotacion con el negocio y el periodo identificados', async () => {
+    const { rerender } = renderHook(({ companyId, periodId }) => useRankingRotacion(companyId, periodId), {
+      wrapper,
+      initialProps: { companyId: undefined as string | undefined, periodId: undefined as string | undefined },
+    });
+    expect(apiGet).not.toHaveBeenCalled();
+
+    apiGet.mockResolvedValue({ data: { data: { ranking: [], criterio: 'rendimiento', advertencia: null, excluidos: [] } } });
+    rerender({ companyId: 'company-1', periodId: 'period-1' });
+    await waitFor(() => expect(apiGet).toHaveBeenCalled());
+
+    expect(apiGet).toHaveBeenCalledWith(
+      '/companies/company-1/analisis/ranking-rotacion',
+      { params: { periodoId: 'period-1' } },
+    );
   });
 
   it('consulta el precio de transferencia sólo cuando hay un negocio identificado', async () => {

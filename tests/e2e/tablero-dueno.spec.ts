@@ -363,6 +363,10 @@ async function responderTablero(
       },
     });
   });
+  await page.route(`**/api/v1/companies/${COMPANY_ID}/analisis/ranking-rotacion**`, (route) => {
+    if (route.request().method() !== 'GET') return route.fallback();
+    return route.fulfill({ json: { data: { ranking: [], criterio: 'rendimiento', advertencia: null, excluidos: [] } } });
+  });
   await page.route(`**/api/v1/companies/${COMPANY_ID}/analisis/precio-transferencia`, (route) => {
     if (route.request().method() !== 'GET') return route.fallback();
     return route.fulfill({ json: PRECIO_TRANSFERENCIA_AM_11 });
@@ -859,6 +863,57 @@ testConSesion('ordena AM-06 por aporte al recurso escaso sin ocultar el aporte p
     contentType: 'image/png',
   });
   expect(consola.mensajes, 'errores al mostrar la mezcla óptima').toEqual([]);
+});
+
+testConSesion('ordena AM-13 por margen y rotación y advierte al ordenar sólo por margen', async ({ page, consola }, testInfo) => {
+  await responderTablero(page, TABLERO_COMPLETO);
+  await page.route(`**/api/v1/companies/${COMPANY_ID}/analisis/ranking-rotacion**`, (route) => {
+    const porMargen = new URL(route.request().url()).searchParams.get('criterio') === 'margen';
+    return route.fulfill({
+      json: {
+        data: {
+          ranking: porMargen
+            ? [
+                { producto: 'Producto B', margen: 0.6, rotacion: 2, rendimiento: 1.2, rotacionOrigen: 'DECLARADA' },
+                { producto: 'Producto A', margen: 0.2, rotacion: 12, rendimiento: 2.4, rotacionOrigen: 'DEFAULT' },
+              ]
+            : [
+                { producto: 'Producto A', margen: 0.2, rotacion: 12, rendimiento: 2.4, rotacionOrigen: 'DEFAULT' },
+                { producto: 'Producto B', margen: 0.6, rotacion: 2, rendimiento: 1.2, rotacionOrigen: 'DECLARADA' },
+              ],
+          criterio: porMargen ? 'margen' : 'rendimiento',
+          advertencia: porMargen
+            ? 'Ordenar sólo por margen ignora cuántas veces rota el stock y puede invertir la prioridad comercial.'
+            : null,
+          excluidos: [{ producto: 'Producto C', motivo: 'ROTACION_SIN_DECLARAR' }],
+        },
+      },
+    });
+  });
+
+  await page.goto(`/owner-dashboard?periodId=${PERIOD_ID}`, { waitUntil: 'domcontentloaded' });
+  await laAppPinto(page);
+
+  const panel = page.getByTestId('ranking-rotacion-panel');
+  let filas = panel.getByRole('row');
+  await expect(filas.nth(1)).toContainText('Producto A');
+  await expect(filas.nth(1)).toContainText('20%');
+  await expect(filas.nth(1)).toContainText('12');
+  await expect(filas.nth(1)).toContainText('estimada (valor por defecto)');
+  await expect(filas.nth(2)).toContainText('Producto B');
+  await expect(panel).toContainText('Falta cargar cuántas veces rota este producto en el período');
+
+  await panel.getByRole('button', { name: 'Sólo margen' }).click();
+  await expect(panel.getByRole('alert')).toContainText('ignora cuántas veces rota');
+  filas = panel.getByRole('row');
+  await expect(filas.nth(1)).toContainText('Producto B');
+
+  await expandirParaCaptura(page);
+  await testInfo.attach('ranking-rotacion-am-13', {
+    body: await page.screenshot({ fullPage: true }),
+    contentType: 'image/png',
+  });
+  expect(consola.mensajes, 'errores al mostrar el ranking de rotación').toEqual([]);
 });
 
 testConSesion('muestra AM-11 con los dos equilibrios y el uso de cada criterio', async ({ page, consola }, testInfo) => {
