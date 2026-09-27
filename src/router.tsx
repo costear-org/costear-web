@@ -5,7 +5,7 @@ import {
   redirect,
   Outlet,
 } from '@tanstack/react-router';
-import { useAuthStore } from '@/stores/auth-store';
+import { canManageDataLoaders, useAuthStore } from '@/stores/auth-store';
 import { LoginPage } from '@/features/auth/LoginPage';
 import { RegisterPage } from '@/features/auth/RegisterPage';
 import { ForgotPasswordPage } from '@/features/auth/ForgotPasswordPage';
@@ -31,6 +31,7 @@ import { LandingPage } from '@/features/landing/LandingPage';
 import { TrazabilidadDatoPage, TrazabilidadCalculoPage } from '@/features/trazabilidad/TrazabilidadPages';
 import { OwnerDashboardPage } from '@/features/owner-dashboard/OwnerDashboardPage';
 import { FieldPanelPage } from '@/features/field-panel/FieldPanelPage';
+import { CargadoresPage } from '@/features/companies/CargadoresPage';
 import { authDestination } from '@/features/auth/auth-destination';
 
 
@@ -61,6 +62,14 @@ function requireAuth() {
   }
 }
 
+function requireCargadoresAdmin() {
+  requireAuth();
+  const { user } = useAuthStore.getState();
+  if (user && !canManageDataLoaders(user)) {
+    throw redirect({ to: '/dashboard' });
+  }
+}
+
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/',
@@ -88,6 +97,7 @@ const forgotRoute = createRoute({ getParentRoute: () => rootRoute, path: '/forgo
 const resetRoute = createRoute({ getParentRoute: () => rootRoute, path: '/reset-password', component: ResetPasswordPage });
 
 const dashboardRoute = createRoute({ getParentRoute: () => rootRoute, path: '/dashboard', beforeLoad: requireAuth, component: DashboardPage });
+const tableroRoute = createRoute({ getParentRoute: () => rootRoute, path: '/tablero', beforeLoad: requireAuth, component: DashboardPage });
 const ownerDashboardRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/owner-dashboard',
@@ -111,6 +121,7 @@ const fieldPanelRoute = createRoute({
   component: FieldPanelPage,
 });
 const companiesRoute = createRoute({ getParentRoute: () => rootRoute, path: '/companies', beforeLoad: requireAuth, component: CompaniesPage });
+const cargadoresRoute = createRoute({ getParentRoute: () => rootRoute, path: '/cargadores', beforeLoad: requireCargadoresAdmin, component: CargadoresPage });
 const companyDetailRoute = createRoute({ getParentRoute: () => rootRoute, path: '/companies/$id', beforeLoad: requireAuth, component: CompanyDetailPage });
 const companySetupRoute = createRoute({ getParentRoute: () => rootRoute, path: '/companies/$id/setup', beforeLoad: requireAuth, component: CompanyTargetSetup });
 const costStructureRoute = createRoute({ getParentRoute: () => rootRoute, path: '/cost-structures/$id', beforeLoad: requireAuth, component: CostStructurePage });
@@ -178,7 +189,7 @@ const empresaPortalRoute = createRoute({
     // (bookmark, o después de cambiar la contraseña) sin pasar por
     // requireAuth(), este es el único lugar que los agarra.
     if (user?.needsTermsAcceptance) throw redirect({ to: '/accept-terms' });
-    // No bloquear por rol: el costista que llega acá sería raro pero se lo redirige al dash
+    if (user && user.role !== 'EMPRESA_OPERATOR') throw redirect({ to: '/dashboard' });
   },
   component: EmpresaPortalPage,
 });
@@ -190,9 +201,11 @@ const routeTree = rootRoute.addChildren([
   forgotRoute,
   resetRoute,
   dashboardRoute,
+  tableroRoute,
   ownerDashboardRoute,
   fieldPanelRoute,
   companiesRoute,
+  cargadoresRoute,
   companyDetailRoute,
   companySetupRoute,
   costStructureRoute,

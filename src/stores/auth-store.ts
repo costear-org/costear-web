@@ -10,6 +10,10 @@ export interface AuthUser {
   needsTermsAcceptance?: boolean;
 }
 
+export function canManageDataLoaders(user: AuthUser | null | undefined): boolean {
+  return user?.role === 'EMPRESA_ADMIN' || user?.role === 'EMPRESARIO';
+}
+
 interface AuthState {
   accessToken: string | null;
   user: AuthUser | null;

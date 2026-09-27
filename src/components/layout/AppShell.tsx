@@ -11,9 +11,10 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   Menu,
+  UserRoundCog,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useAuthStore } from "@/stores/auth-store";
+import { canManageDataLoaders, useAuthStore } from "@/stores/auth-store";
 import { useLogout } from "@/features/auth/auth-hooks";
 import { usePendingCount } from "@/features/validaciones/validaciones-hooks";
 import { CosteARLogo } from "@/components/layout/CosteARLogo";
@@ -29,6 +30,7 @@ const NAV = [
   // no anidada bajo /companies) pero conceptualmente son parte del flujo de
   // Clientes — el nav debe seguir marcando "Clientes" ahí adentro.
   { to: "/companies", label: "Clientes", icon: Building2, matchAlso: ["/cost-structures"] },
+  { to: "/cargadores", label: "Cargadores de datos", icon: UserRoundCog, loaderAdminOnly: true },
   {
     to: "/validaciones",
     label: "Validaciones",
@@ -61,6 +63,7 @@ export function AppShell({
   const { data: pendingCount = 0 } = usePendingCount();
 
   const activeNavItems = NAV.filter((navItem) => {
+    if ("loaderAdminOnly" in navItem && navItem.loaderAdminOnly && !canManageDataLoaders(user)) return false;
     const isAdminRoute = "adminOnly" in navItem && navItem.adminOnly;
     if (isAdminRoute && user?.role !== 'ADMIN') return false;
     
