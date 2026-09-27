@@ -17,6 +17,7 @@ const {
   useEquilibrioSectorial,
   useEquilibrioTramos,
   useOwnerDashboard,
+  usePlaneamientoResultados,
   usePuntoCierre,
   useSegmentosAnalisis,
   useUpdateSegmentoAnalisis,
@@ -122,6 +123,32 @@ describe('tablero del dueño', () => {
     await waitFor(() => expect(apiGet).toHaveBeenCalled());
 
     expect(apiGet).toHaveBeenCalledWith('/companies/company-1/analisis/capacidad-ociosa');
+  });
+
+  it('envía el objetivo al endpoint de planeamiento sin recalcular la respuesta', async () => {
+    const input = {
+      modalidad: 'fisica' as const,
+      costosFijos: 8_000,
+      costoVariableUnitario: 30,
+      precioUnitario: 100,
+      unidadCantidad: 'unidad',
+      moneda: 'ARS',
+      objetivo: {
+        tipo: 'porcentaje_sobre_capital' as const,
+        tasa: 0.1,
+        capitalFijo: 30_000,
+        capitalPorPesoCostoVariable: 0.25,
+      },
+    };
+    const response = { cantidadNecesaria: 170.3971119 };
+    apiPost.mockResolvedValue({ data: { data: response } });
+    const hook = renderHook(() => usePlaneamientoResultados('company-1'), { wrapper });
+
+    await expect(hook.result.current.mutateAsync(input)).resolves.toBe(response);
+    expect(apiPost).toHaveBeenCalledWith(
+      '/companies/company-1/analisis/planeamiento-resultados',
+      input,
+    );
   });
 
   it('crea, edita y da de baja segmentos con el contrato publicado', async () => {
