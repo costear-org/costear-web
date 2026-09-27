@@ -128,3 +128,5 @@ pr,issue,autor,base,abierto,mergeado,horas,archivos,agregadas,borradas,corridas_
 235,209,AlanArevalo1,dev,2026-09-27T11:40:07Z,2026-09-27T11:54:58Z,0.2,7,446,0,11,0,,,docs/sesiones/2026-09-27-209-recurso-escaso.md
 236,210,AlanArevalo1,dev,2026-09-27T14:25:08Z,2026-09-27T14:39:32Z,0.2,7,335,0,11,0,,,docs/sesiones/2026-09-27-210-precio-transferencia.md
 237,211,AlanArevalo1,dev,2026-09-27T14:53:24Z,2026-09-27T15:14:04Z,0.3,7,359,0,7,0,,,docs/sesiones/2026-09-27-211-ranking-rotacion.md
+238,223,AlanArevalo1,dev,2026-09-27T20:48:39Z,2026-09-27T21:06:19Z,0.3,9,374,1,14,2,,,docs/sesiones/2026-09-27-223-alta-detalle-obra.md
+239,224,AlanArevalo1,dev,2026-09-27T21:49:59Z,2026-09-27T22:22:10Z,0.5,7,216,7,15,0,,,docs/sesiones/2026-09-27-224-presupuesto-obra.md
