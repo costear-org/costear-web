@@ -7,6 +7,38 @@ export interface Operator {
   email: string;
   isActive: boolean;
   createdAt: string;
+  alcance: {
+    unidadesProductivas: Array<{ id: string; referencia: string }>;
+    depositos: Array<{ id: string; referencia: string }>;
+    ordenesTrabajo: Array<{ id: string; codigo: string; descripcion: string }>;
+  };
+  permisos: string[];
+}
+
+export interface AssignableEntity {
+  id: string;
+  referencia: string;
+  etiqueta: string;
+}
+
+export interface AssignableEntities {
+  unidadesProductivas: AssignableEntity[];
+  depositos: AssignableEntity[];
+}
+
+export interface OperationalAction {
+  clave: string;
+  nombre: string;
+  descripcion: string;
+  superficie: string;
+  destino: string;
+  entidad: AssignableEntity & { tipo: 'UnidadProductiva' | 'Deposito' };
+}
+
+export interface OperationalCatalog {
+  estado: 'disponible' | 'sin_entidades_autorizadas';
+  mensaje: string | null;
+  acciones: OperationalAction[];
 }
 
 export interface GeneratedAccess {
@@ -24,6 +56,50 @@ export function useOperators(companyId: string) {
       return res.data.data;
     },
     enabled: !!companyId,
+  });
+}
+
+export function useAssignableEntities(companyId: string) {
+  return useQuery({
+    queryKey: ['assignable-entities', companyId],
+    queryFn: async () => {
+      const res = await api.get<{ data: AssignableEntities }>(
+        `/empresa-portal/${companyId}/assignable-entities`,
+      );
+      return res.data.data;
+    },
+    enabled: !!companyId,
+  });
+}
+
+export interface OperatorScopeInput {
+  operatorId: string;
+  unidadProductivaIds: string[];
+  depositoIds: string[];
+  ordenTrabajoIds: string[];
+  permisos: string[];
+}
+
+export function useReplaceOperatorScope(companyId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ operatorId, ...scope }: OperatorScopeInput) => {
+      await api.put(`/empresa-portal/${companyId}/operators/${operatorId}/scope`, scope);
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['operators', companyId] }),
+  });
+}
+
+export function useOperationalCatalog(connectionId: string | null) {
+  return useQuery({
+    queryKey: ['operational-catalog', connectionId],
+    queryFn: async () => {
+      const res = await api.get<{ data: OperationalCatalog }>(
+        `/empresa-portal/connections/${connectionId}/operational-catalog`,
+      );
+      return res.data.data;
+    },
+    enabled: !!connectionId,
   });
 }
 

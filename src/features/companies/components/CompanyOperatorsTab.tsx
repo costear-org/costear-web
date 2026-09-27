@@ -1,18 +1,29 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Plus, Users, KeyRound, Trash2, Eye, EyeOff, Copy } from 'lucide-react';
 import { Card, CardBody, CardHeader } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { PortalOverlay } from '@/components/ui/PortalOverlay';
 import { StatusBadge } from '@/components/ui/StatusBadge';
-import { useOperators, useGenerateOperatorAccess, useRevokeOperator, useResetOperatorPassword, type GeneratedAccess } from '@/features/empresa-portal/empresa-portal-hooks';
+import {
+  useAssignableEntities,
+  useOperators,
+  useGenerateOperatorAccess,
+  useReplaceOperatorScope,
+  useRevokeOperator,
+  useResetOperatorPassword,
+  type AssignableEntity,
+  type GeneratedAccess,
+  type Operator,
+} from '@/features/empresa-portal/empresa-portal-hooks';
 import { useEmpresaConnections } from '@/features/empresa/empresa-hooks';
 import { WhatsappConfigModal } from '@/features/empresa/components/WhatsappConfigModal';
 import { cn } from '@/lib/utils';
 import { apiErrorMessage } from '@/lib/api';
 
 export function CompanyOperatorsTab({ companyId }: { companyId: string }) {
-  const { data: operators = [] } = useOperators(companyId);
+  const { data: operators = [], isLoading: operatorsLoading, isError: operatorsError } = useOperators(companyId);
+  const { data: assignable, isLoading: entitiesLoading, isError: entitiesError } = useAssignableEntities(companyId);
   const generate = useGenerateOperatorAccess(companyId);
   const revoke = useRevokeOperator();
   const reset = useResetOperatorPassword();
@@ -78,11 +89,11 @@ export function CompanyOperatorsTab({ companyId }: { companyId: string }) {
     <div className="space-y-4">
       <Card>
         <CardHeader
-          title="Personal autorizado"
-        description="Usuarios de este negocio que pueden cargar documentos al portal"
+          title="Cargadores de datos"
+        description="Invitá personas y definí exactamente en qué sectores o procesos pueden cargar"
         action={
           <Button size="sm" variant="secondary" onClick={() => setShowForm((v) => !v)}>
-            <Plus className="size-4" /> Invitar operador
+            <Plus className="size-4" /> Invitar cargador
           </Button>
         }
       />
@@ -91,7 +102,7 @@ export function CompanyOperatorsTab({ companyId }: { companyId: string }) {
           <PortalOverlay>
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4 animate-fade-in">
             <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl animate-rise border border-zinc-150 space-y-3">
-              <h3 className="text-lg font-bold text-zinc-900 mb-1">Invitar operador</h3>
+              <h3 className="text-lg font-bold text-zinc-900 mb-1">Invitar cargador de datos</h3>
               <div className="grid grid-cols-2 gap-3">
                 <Input
                   label="Nombre completo"
@@ -126,7 +137,7 @@ export function CompanyOperatorsTab({ companyId }: { companyId: string }) {
                 )}
               </div>
               <p className="text-[12px] text-ink-soft">
-                El operador recibirá un email con sus credenciales temporales y podrá cambiar su contraseña al ingresar.
+                La persona recibirá un email con sus credenciales temporales. Después de invitarla, asignale los sectores habilitados.
               </p>
               {generateError && (
                 <p className="rounded-sm bg-danger/10 px-3 py-2 text-[13px] text-danger">{generateError}</p>
@@ -250,7 +261,7 @@ export function CompanyOperatorsTab({ companyId }: { companyId: string }) {
         {operators.length === 0 && !showForm ? (
           <div className="flex flex-col items-center gap-2 py-8 text-center">
             <Users className="size-8 text-ink-soft/40" />
-            <p className="text-[13px] text-ink-soft">Todavía no hay personal autorizado para este negocio.</p>
+            <p className="text-[13px] text-ink-soft">Todavía no hay cargadores de datos para este negocio.</p>
           </div>
         ) : (
           <ul className="divide-y divide-line">
@@ -260,7 +271,8 @@ export function CompanyOperatorsTab({ companyId }: { companyId: string }) {
               const roleInfo = parts[1];
 
               return (
-              <li key={op.id} className="flex items-center justify-between gap-4 py-4 px-2 hover:bg-zinc-50/50 rounded-xl transition-colors">
+              <li key={op.id} className="space-y-4 rounded-xl px-2 py-4 transition-colors hover:bg-zinc-50/50">
+                <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
                 <div className="flex items-center gap-4">
                   <div className="flex size-10 items-center justify-center rounded-full bg-granate/10 text-granate shadow-sm">
                     <Users className="size-5" />
@@ -277,7 +289,7 @@ export function CompanyOperatorsTab({ companyId }: { companyId: string }) {
                     <div className="flex items-center gap-3 mt-1">
                       <p className="text-[12px] font-medium text-ink-soft">{op.email}</p>
                       <span className="text-[10px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full flex items-center gap-1 border border-emerald-100">
-                        <span className="size-1.5 rounded-full bg-emerald-500" /> Permisos: Solo carga
+                        <span className="size-1.5 rounded-full bg-emerald-500" /> Acceso limitado por asignación
                       </span>
                     </div>
                   </div>
@@ -309,10 +321,22 @@ export function CompanyOperatorsTab({ companyId }: { companyId: string }) {
                     </Button>
                   )}
                 </div>
+                </div>
+                {op.isActive && assignable && (
+                  <OperatorScopeEditor companyId={companyId} operator={op} assignable={assignable} />
+                )}
               </li>
               );
             })}
           </ul>
+        )}
+        {(operatorsLoading || entitiesLoading) && (
+          <p role="status" className="py-4 text-sm text-ink-soft">Cargando cargadores y sectores…</p>
+        )}
+        {(operatorsError || entitiesError) && (
+          <p role="alert" className="rounded-xl bg-danger/10 px-4 py-3 text-sm text-danger">
+            No pudimos cargar los cargadores o los sectores disponibles.
+          </p>
         )}
       </CardBody>
     </Card>
@@ -353,6 +377,82 @@ export function CompanyOperatorsTab({ companyId }: { companyId: string }) {
         onClose={() => setShowWhatsappModal(false)}
       />
     )}
+    </div>
+  );
+}
+
+function OperatorScopeEditor({
+  companyId,
+  operator,
+  assignable,
+}: {
+  companyId: string;
+  operator: Operator;
+  assignable: { unidadesProductivas: AssignableEntity[]; depositos: AssignableEntity[] };
+}) {
+  const replaceScope = useReplaceOperatorScope(companyId);
+  const [unidadIds, setUnidadIds] = useState<string[]>([]);
+  const [depositoIds, setDepositoIds] = useState<string[]>([]);
+  const [saved, setSaved] = useState(false);
+
+  useEffect(() => {
+    setUnidadIds(operator.alcance.unidadesProductivas.map((item) => item.id));
+    setDepositoIds(operator.alcance.depositos.map((item) => item.id));
+  }, [operator]);
+
+  const toggle = (id: string, values: string[], setValues: (next: string[]) => void) => {
+    setSaved(false);
+    setValues(values.includes(id) ? values.filter((value) => value !== id) : [...values, id]);
+  };
+
+  const groups = [
+    { key: 'unidades', items: assignable.unidadesProductivas, values: unidadIds, setValues: setUnidadIds },
+    { key: 'depositos', items: assignable.depositos, values: depositoIds, setValues: setDepositoIds },
+  ];
+
+  return (
+    <div className="rounded-xl border border-line bg-surface-alt p-4">
+      <p className="text-xs font-bold uppercase tracking-wide text-ink-soft">Sectores y procesos autorizados</p>
+      <div className="mt-3 grid gap-3 sm:grid-cols-2">
+        {groups.map((group) => (
+          <div key={group.key} className="space-y-2">
+            {group.items.map((entity) => (
+              <label key={entity.id} className="flex cursor-pointer items-start gap-2 rounded-lg bg-surface px-3 py-2 text-sm text-ink">
+                <input
+                  type="checkbox"
+                  className="mt-0.5 accent-granate"
+                  checked={group.values.includes(entity.id)}
+                  onChange={() => toggle(entity.id, group.values, group.setValues)}
+                />
+                <span><strong>{entity.etiqueta}</strong> · {entity.referencia}</span>
+              </label>
+            ))}
+          </div>
+        ))}
+      </div>
+      {assignable.unidadesProductivas.length === 0 && assignable.depositos.length === 0 && (
+        <p className="mt-2 text-sm text-ink-soft">Este negocio todavía no tiene sectores asignables.</p>
+      )}
+      <div className="mt-3 flex items-center gap-3">
+        <Button
+          size="sm"
+          onClick={async () => {
+            await replaceScope.mutateAsync({
+              operatorId: operator.id,
+              unidadProductivaIds: unidadIds,
+              depositoIds,
+              ordenTrabajoIds: operator.alcance.ordenesTrabajo.map((item) => item.id),
+              permisos: operator.permisos,
+            });
+            setSaved(true);
+          }}
+          loading={replaceScope.isPending}
+        >
+          Guardar asignación
+        </Button>
+        {saved && <span role="status" className="text-xs font-semibold text-ok">Asignación guardada</span>}
+        {replaceScope.isError && <span role="alert" className="text-xs font-semibold text-danger">No se pudo guardar.</span>}
+      </div>
     </div>
   );
 }

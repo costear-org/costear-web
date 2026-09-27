@@ -93,6 +93,12 @@ export function StructureSelectDropdown({
 }: StructureSelectDropdownProps) {
   const { data: structures = [] } = useQuery<PortalStructure[]>({
     queryKey: ['portal-structures', connectionId],
+    queryFn: async () => {
+      const res = await api.get<{ data: PortalStructure[] }>(
+        `/empresa-portal/connections/${connectionId}/structures`,
+      );
+      return res.data.data;
+    },
   });
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
