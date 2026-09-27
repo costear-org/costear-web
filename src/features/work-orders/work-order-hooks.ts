@@ -6,6 +6,17 @@ export type WorkOrder = { id: string; codigo: string; descripcion: string; clien
 export type WorkOrderStage = { id: string; clave: string; nombre: string; orden: number; esEntrega: boolean };
 export type WorkOrderTemplate = { id: string; nombre: string; etapas: WorkOrderStage[] };
 export type PackageLexicon = { category: string | null; lexicon: Record<string, string> };
+export type BudgetType = 'BASE' | 'ADICIONAL' | 'REVISION';
+export type BudgetState = 'BORRADOR' | 'PREPARADO' | 'APROBADO' | 'RECHAZADO' | 'VENCIDO';
+export type BudgetLine = { id?: string; elemento: 'MP' | 'MOD' | 'CIP' | 'TERCEROS' | 'ENTREGA'; etapaId?: string | null; cantidad: number; unidadId: string; precio: number };
+export type WorkOrderBudget = {
+  id: string; ordenId: string; tipo: BudgetType; numero: number; estado: BudgetState;
+  vigenteDesde: string; vigenciaDias: number; costoPrevisto: number; precio?: number;
+  plazoDias: number; preparadoPor?: string | null; aprobadoPor?: string | null;
+  causaAdicional?: string | null; renglones: BudgetLine[];
+};
+export type WorkOrderBudgets = { presupuestos: WorkOrderBudget[]; precioContractual?: number; costoPrevistoTotal: number };
+export type BudgetAction = 'preparar' | 'aprobar' | 'rechazar' | 'revalidar';
 
 export function usePackageLexicon(companyId: string) {
   return useQuery({
@@ -53,6 +64,23 @@ export function useWorkOrderStages(id: string) {
     queryKey: ['work-orders', id, 'stages'],
     queryFn: async () => (await api.get<{ data: WorkOrderStage[] }>(`/ordenes-trabajo/${id}/etapas`)).data.data,
     enabled: Boolean(id),
+  });
+}
+
+export function useWorkOrderBudgets(id: string, enabled = true) {
+  return useQuery({
+    queryKey: ['work-orders', id, 'budgets'],
+    queryFn: async () => (await api.get<{ data: WorkOrderBudgets }>(`/ordenes-trabajo/${id}/presupuestos`)).data.data,
+    enabled: Boolean(id) && enabled,
+  });
+}
+
+export function useBudgetAction(orderId: string) {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ budgetId, action }: { budgetId: string; action: BudgetAction }) =>
+      (await api.post<{ data: WorkOrderBudget }>(`/presupuestos/${budgetId}/${action}`, action === 'revalidar' ? {} : undefined)).data.data,
+    onSuccess: () => client.invalidateQueries({ queryKey: ['work-orders', orderId, 'budgets'] }),
   });
 }
 
