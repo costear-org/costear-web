@@ -124,6 +124,32 @@ export interface PlaneamientoResultadosData {
   motivo?: string;
 }
 
+export interface PuntoIndiferenciaInput {
+  tipoDecision: 'comparar_estructuras';
+  estructuraA: {
+    nombre: string;
+    costosFijos: number;
+    costoVariableUnitario: number;
+  };
+  estructuraB: {
+    nombre: string;
+    costosFijos: number;
+    costoVariableUnitario: number;
+  };
+  unidadCantidad: string;
+  moneda: string;
+}
+
+export interface PuntoIndiferenciaData {
+  cantidadIndiferencia: number | null;
+  costoEnElPunto: number | null;
+  convieneA: { desde: number; hasta: number | null } | null;
+  convieneB: { desde: number; hasta: number | null } | null;
+  motivoSinPunto: string | null;
+  criterio: 'costos_totales' | 'r25_fijo_evitable_y_liquidacion';
+  unidades: { cantidad: string; costo: string };
+}
+
 export interface PuntoCierreHorizonte {
   horizonteMeses: number;
   valor: number | null;
@@ -349,6 +375,18 @@ export function usePlaneamientoResultados(companyId: string | undefined) {
     mutationFn: async (input: PlaneamientoResultadosInput) => {
       const response = await api.post<{ data: PlaneamientoResultadosData }>(
         `/companies/${companyId}/analisis/planeamiento-resultados`,
+        input,
+      );
+      return response.data.data;
+    },
+  });
+}
+
+export function usePuntoIndiferencia(companyId: string | undefined) {
+  return useMutation({
+    mutationFn: async (input: PuntoIndiferenciaInput) => {
+      const response = await api.post<{ data: PuntoIndiferenciaData }>(
+        `/companies/${companyId}/analisis/punto-indiferencia`,
         input,
       );
       return response.data.data;

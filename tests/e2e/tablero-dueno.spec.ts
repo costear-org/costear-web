@@ -686,6 +686,72 @@ testConSesion('calcula cuánto vender para ganar sobre el capital y explica el 4
   expect(consola.mensajes, 'errores al planear el resultado').toEqual([]);
 });
 
+testConSesion('compara dos equipos con AM-04 y declara cuando no existe un punto', async ({ page, consola }, testInfo) => {
+  await responderTablero(page, TABLERO_COMPLETO);
+  let sinPunto = false;
+  await page.route(`**/api/v1/companies/${COMPANY_ID}/analisis/punto-indiferencia`, async (route) => {
+    if (route.request().method() !== 'POST') return route.fallback();
+    expect(route.request().postDataJSON()).toEqual({
+      tipoDecision: 'comparar_estructuras',
+      estructuraA: { nombre: 'Equipo A', costosFijos: 300_000, costoVariableUnitario: 100 },
+      estructuraB: { nombre: 'Equipo B', costosFijos: 100_000, costoVariableUnitario: sinPunto ? 100 : 150 },
+      unidadCantidad: 'cajones',
+      moneda: 'ARS',
+    });
+    return route.fulfill({
+      json: {
+        data: sinPunto
+          ? {
+            cantidadIndiferencia: null,
+            costoEnElPunto: null,
+            convieneA: null,
+            convieneB: { desde: 0, hasta: null },
+            motivoSinPunto: 'Las estructuras tienen el mismo costo variable; Equipo B conviene en todo volumen.',
+            criterio: 'costos_totales',
+            unidades: { cantidad: 'cajones', costo: 'ARS' },
+          }
+          : {
+            cantidadIndiferencia: 4_000,
+            costoEnElPunto: 700_000,
+            convieneA: { desde: 4_000, hasta: null },
+            convieneB: { desde: 0, hasta: 4_000 },
+            motivoSinPunto: null,
+            criterio: 'costos_totales',
+            unidades: { cantidad: 'cajones', costo: 'ARS' },
+          },
+      },
+    });
+  });
+  await page.goto(`/owner-dashboard?periodId=${PERIOD_ID}`, { waitUntil: 'domcontentloaded' });
+
+  await laAppPinto(page);
+  const panel = page.getByTestId('punto-indiferencia-panel');
+  await panel.getByLabel('Un equipo u otro').check();
+  await panel.getByLabel('Costos fijos de Equipo A').fill('300000');
+  await panel.getByLabel('Costo variable por unidad de Equipo A').fill('100');
+  await panel.getByLabel('Costos fijos de Equipo B').fill('100000');
+  await panel.getByLabel('Costo variable por unidad de Equipo B').fill('150');
+  await panel.getByRole('button', { name: 'Comparar costos' }).click();
+
+  await expect(panel.getByText('4.000 cajones')).toBeVisible();
+  await expect(panel.getByText('$ 700.000,00')).toBeVisible();
+  await expect(panel.getByText('Por debajo:').locator('..')).toContainText('Equipo B');
+  await expect(panel.getByText('Por encima:').locator('..')).toContainText('Equipo A');
+
+  sinPunto = true;
+  await panel.getByLabel('Costo variable por unidad de Equipo B').fill('100');
+  await panel.getByRole('button', { name: 'Comparar costos' }).click();
+  await expect(panel.getByText('Las estructuras tienen el mismo costo variable; Equipo B conviene en todo volumen.')).toBeVisible();
+  await expect(panel).not.toContainText('Infinity');
+
+  await expandirParaCaptura(page);
+  await testInfo.attach('punto-indiferencia-am-04', {
+    body: await page.screenshot({ fullPage: true }),
+    contentType: 'image/png',
+  });
+  expect(consola.mensajes, 'errores al comparar estructuras').toEqual([]);
+});
+
 testConSesion('muestra AM-09 por tramos y nunca publica el equilibrio aritmético fuera de rango', async ({ page, consola }, testInfo) => {
   await responderTablero(
     page,

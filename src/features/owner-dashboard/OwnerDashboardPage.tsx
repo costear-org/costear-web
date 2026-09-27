@@ -36,6 +36,7 @@ import {
   useEquilibrioTramos,
   useOwnerDashboard,
   usePlaneamientoResultados,
+  usePuntoIndiferencia,
   usePuntoCierre,
   useSegmentosAnalisis,
   useUpdateSegmentoAnalisis,
@@ -50,6 +51,7 @@ import { EquilibrioTramosPanel } from './EquilibrioTramosPanel';
 import { EquilibrioSectorialPanel } from './EquilibrioSectorialPanel';
 import { CapacidadOciosaPanel } from './CapacidadOciosaPanel';
 import { PlaneamientoResultadosPanel } from './PlaneamientoResultadosPanel';
+import { PuntoIndiferenciaPanel } from './PuntoIndiferenciaPanel';
 
 const SIN_DATOS = 'Sin datos';
 const INCOMPLETO = 'Incompleto';
@@ -515,6 +517,7 @@ export function OwnerDashboardPage() {
   const equilibrioSectorial = useEquilibrioSectorial(companyId);
   const capacidadOciosa = useCapacidadOciosa(companyId);
   const planeamientoResultados = usePlaneamientoResultados(companyId);
+  const puntoIndiferencia = usePuntoIndiferencia(companyId);
   const segmentosAnalisis = useSegmentosAnalisis(companyId);
   const createSegmento = useCreateSegmentoAnalisis(companyId);
   const updateSegmento = useUpdateSegmentoAnalisis(companyId);
@@ -693,6 +696,14 @@ export function OwnerDashboardPage() {
             companyId={companyId}
             unit={data?.unidadGestion ? nombreUnidadPlural(data.unidadGestion) : undefined}
             onCalculate={(input) => planeamientoResultados.mutateAsync(input)}
+          />
+        </section>
+
+        <section aria-label="Punto de indiferencia">
+          <PuntoIndiferenciaPanel
+            companyId={companyId}
+            unit={data?.unidadGestion ? nombreUnidadPlural(data.unidadGestion) : undefined}
+            onCalculate={(input) => puntoIndiferencia.mutateAsync(input)}
           />
         </section>
 

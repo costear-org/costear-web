@@ -18,6 +18,7 @@ const {
   useEquilibrioTramos,
   useOwnerDashboard,
   usePlaneamientoResultados,
+  usePuntoIndiferencia,
   usePuntoCierre,
   useSegmentosAnalisis,
   useUpdateSegmentoAnalisis,
@@ -147,6 +148,25 @@ describe('tablero del dueño', () => {
     await expect(hook.result.current.mutateAsync(input)).resolves.toBe(response);
     expect(apiPost).toHaveBeenCalledWith(
       '/companies/company-1/analisis/planeamiento-resultados',
+      input,
+    );
+  });
+
+  it('envía ambas estructuras al endpoint de indiferencia sin recalcular la respuesta', async () => {
+    const input = {
+      tipoDecision: 'comparar_estructuras' as const,
+      estructuraA: { nombre: 'Equipo A', costosFijos: 300_000, costoVariableUnitario: 100 },
+      estructuraB: { nombre: 'Equipo B', costosFijos: 100_000, costoVariableUnitario: 150 },
+      unidadCantidad: 'unidades',
+      moneda: 'ARS',
+    };
+    const response = { cantidadIndiferencia: 4_000, costoEnElPunto: 700_000 };
+    apiPost.mockResolvedValue({ data: { data: response } });
+    const hook = renderHook(() => usePuntoIndiferencia('company-1'), { wrapper });
+
+    await expect(hook.result.current.mutateAsync(input)).resolves.toBe(response);
+    expect(apiPost).toHaveBeenCalledWith(
+      '/companies/company-1/analisis/punto-indiferencia',
       input,
     );
   });
