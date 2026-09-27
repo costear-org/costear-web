@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams, useNavigate } from '@tanstack/react-router';
-import { Edit2, Trash2, ArrowLeft, Users, FileSpreadsheet, BookOpen, History, Tags, Scissors } from 'lucide-react';
+import { Edit2, Trash2, ArrowLeft, Users, FileSpreadsheet, BookOpen, History, Tags, Scissors, ClipboardList } from 'lucide-react';
 import { AppShell } from '@/components/layout/AppShell';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { useCompany, useCostStructures, useDeleteCompany } from './company-hooks';
@@ -101,6 +101,9 @@ export function CompanyDetailPage() {
           </div>
           {company?.industry && <p className="mt-1 text-sm text-zinc-500">{company.industry}</p>}
         </div>
+        <Link to="/companies/$companyId/ordenes-trabajo" params={{ companyId: id }} className="inline-flex items-center gap-2 rounded-xl bg-granate px-4 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-granate-deep">
+          <ClipboardList className="size-4" /> Operación
+        </Link>
       </div>
 
       {/* Asistente de Configuración Inicial (IA) — solo tiene sentido antes de

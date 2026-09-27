@@ -33,6 +33,8 @@ import { OwnerDashboardPage } from '@/features/owner-dashboard/OwnerDashboardPag
 import { FieldPanelPage } from '@/features/field-panel/FieldPanelPage';
 import { CargadoresPage } from '@/features/companies/CargadoresPage';
 import { authDestination } from '@/features/auth/auth-destination';
+import { WorkOrdersPage } from '@/features/work-orders/WorkOrdersPage';
+import { WorkOrderDetailPage } from '@/features/work-orders/WorkOrderDetailPage';
 
 
 const rootRoute = createRootRoute({
@@ -124,6 +126,8 @@ const companiesRoute = createRoute({ getParentRoute: () => rootRoute, path: '/co
 const cargadoresRoute = createRoute({ getParentRoute: () => rootRoute, path: '/cargadores', beforeLoad: requireCargadoresAdmin, component: CargadoresPage });
 const companyDetailRoute = createRoute({ getParentRoute: () => rootRoute, path: '/companies/$id', beforeLoad: requireAuth, component: CompanyDetailPage });
 const companySetupRoute = createRoute({ getParentRoute: () => rootRoute, path: '/companies/$id/setup', beforeLoad: requireAuth, component: CompanyTargetSetup });
+const workOrdersRoute = createRoute({ getParentRoute: () => rootRoute, path: '/companies/$companyId/ordenes-trabajo', beforeLoad: requireAuth, component: WorkOrdersPage });
+const workOrderDetailRoute = createRoute({ getParentRoute: () => rootRoute, path: '/companies/$companyId/ordenes-trabajo/$orderId', beforeLoad: requireAuth, component: WorkOrderDetailPage });
 const costStructureRoute = createRoute({ getParentRoute: () => rootRoute, path: '/cost-structures/$id', beforeLoad: requireAuth, component: CostStructurePage });
 const alertsRoute = createRoute({ getParentRoute: () => rootRoute, path: '/alerts', beforeLoad: requireAuth, component: AlertsPage });
 const macroRoute = createRoute({ getParentRoute: () => rootRoute, path: '/macro', beforeLoad: requireAuth, component: MacroPage });
@@ -208,6 +212,8 @@ const routeTree = rootRoute.addChildren([
   cargadoresRoute,
   companyDetailRoute,
   companySetupRoute,
+  workOrdersRoute,
+  workOrderDetailRoute,
   costStructureRoute,
   alertsRoute,
   macroRoute,
