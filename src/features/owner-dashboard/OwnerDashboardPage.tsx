@@ -35,6 +35,7 @@ import {
   useEquilibrioSectorial,
   useEquilibrioTramos,
   useOwnerDashboard,
+  usePlaneamientoResultados,
   usePuntoCierre,
   useSegmentosAnalisis,
   useUpdateSegmentoAnalisis,
@@ -48,6 +49,7 @@ import { PuntoCierrePanel } from './PuntoCierrePanel';
 import { EquilibrioTramosPanel } from './EquilibrioTramosPanel';
 import { EquilibrioSectorialPanel } from './EquilibrioSectorialPanel';
 import { CapacidadOciosaPanel } from './CapacidadOciosaPanel';
+import { PlaneamientoResultadosPanel } from './PlaneamientoResultadosPanel';
 
 const SIN_DATOS = 'Sin datos';
 const INCOMPLETO = 'Incompleto';
@@ -512,6 +514,7 @@ export function OwnerDashboardPage() {
   const equilibrioTramos = useEquilibrioTramos(companyId, Boolean(companyId));
   const equilibrioSectorial = useEquilibrioSectorial(companyId);
   const capacidadOciosa = useCapacidadOciosa(companyId);
+  const planeamientoResultados = usePlaneamientoResultados(companyId);
   const segmentosAnalisis = useSegmentosAnalisis(companyId);
   const createSegmento = useCreateSegmentoAnalisis(companyId);
   const updateSegmento = useUpdateSegmentoAnalisis(companyId);
@@ -682,6 +685,14 @@ export function OwnerDashboardPage() {
             unavailableReason={companies.data && companies.data.length !== 1
               ? 'No se pudo identificar un único negocio para analizar su capacidad.'
               : undefined}
+          />
+        </section>
+
+        <section aria-label="Planeamiento de resultados">
+          <PlaneamientoResultadosPanel
+            companyId={companyId}
+            unit={data?.unidadGestion ? nombreUnidadPlural(data.unidadGestion) : undefined}
+            onCalculate={(input) => planeamientoResultados.mutateAsync(input)}
           />
         </section>
 

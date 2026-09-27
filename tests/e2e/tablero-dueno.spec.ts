@@ -620,6 +620,72 @@ testConSesion('muestra el punto de cierre de 1 y 12 meses sin colapsar horizonte
   expect(consola.mensajes, 'errores al mostrar el punto de cierre').toEqual([]);
 });
 
+testConSesion('calcula cuánto vender para ganar sobre el capital y explica el 422 de R12', async ({ page, consola }, testInfo) => {
+  await responderTablero(page, TABLERO_COMPLETO);
+  let responderConR12 = false;
+  await page.route(`**/api/v1/companies/${COMPANY_ID}/analisis/planeamiento-resultados`, async (route) => {
+    if (route.request().method() !== 'POST') return route.fallback();
+    if (responderConR12) {
+      return route.fulfill({
+        status: 422,
+        json: { error: { code: 'UNPROCESSABLE_ENTITY', message: 'Yardín muestra que al vender la mitad el objetivo sobre ventas empeora.' } },
+      });
+    }
+    expect(route.request().postDataJSON()).toEqual({
+      modalidad: 'fisica',
+      costosFijos: 8_000,
+      costoVariableUnitario: 30,
+      precioUnitario: 100,
+      unidadCantidad: 'cajones',
+      moneda: 'ARS',
+      objetivo: {
+        tipo: 'porcentaje_sobre_capital',
+        tasa: 0.1,
+        capitalFijo: 30_000,
+        capitalPorPesoCostoVariable: 0.25,
+      },
+    });
+    return route.fulfill({
+      json: {
+        data: {
+          cantidadNecesaria: 170.3971119,
+          ventasNecesarias: 17_039.71119,
+          resultadoLogrado: 3_927.7978339,
+          basadoEn: 'porcentaje_sobre_capital',
+          unidades: { cantidadNecesaria: 'cajones', ventasNecesarias: 'ARS', resultadoLogrado: 'ARS' },
+        },
+      },
+    });
+  });
+  await page.goto(`/owner-dashboard?periodId=${PERIOD_ID}`, { waitUntil: 'domcontentloaded' });
+
+  await laAppPinto(page);
+  const panel = page.getByTestId('planeamiento-resultados-panel');
+  await panel.getByLabel('Costos fijos').fill('8000');
+  await panel.getByLabel('Costo variable por unidad').fill('30');
+  await panel.getByLabel('Precio por unidad').fill('100');
+  await panel.getByLabel('Porcentaje sobre el capital').check();
+  await panel.getByLabel('Ganancia buscada').fill('10');
+  await panel.getByLabel('Capital fijo invertido').fill('30000');
+  await panel.getByLabel('Capital por peso de costo variable').fill('0.25');
+  await panel.getByRole('button', { name: 'Calcular objetivo' }).click();
+
+  await expect(panel.getByText('170,40 cajones')).toBeVisible();
+  await expect(panel.getByText('$ 17.039,71')).toBeVisible();
+  await expect(panel.getByText('$ 3.927,80')).toBeVisible();
+
+  responderConR12 = true;
+  await panel.getByRole('button', { name: 'Calcular objetivo' }).click();
+  await expect(panel.getByRole('alert')).toContainText('Yardín muestra que al vender la mitad el objetivo sobre ventas empeora.');
+
+  await expandirParaCaptura(page);
+  await testInfo.attach('planeamiento-resultados-r12', {
+    body: await page.screenshot({ fullPage: true }),
+    contentType: 'image/png',
+  });
+  expect(consola.mensajes, 'errores al planear el resultado').toEqual([]);
+});
+
 testConSesion('muestra AM-09 por tramos y nunca publica el equilibrio aritmético fuera de rango', async ({ page, consola }, testInfo) => {
   await responderTablero(
     page,

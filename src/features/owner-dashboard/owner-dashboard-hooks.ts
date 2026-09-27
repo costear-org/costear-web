@@ -94,6 +94,36 @@ export interface CapiaIndicatorsData {
   items: CapiaIndicator[];
 }
 
+export type PlaneamientoResultadosInput = {
+  modalidad: 'fisica';
+  costosFijos: number;
+  costoVariableUnitario: number;
+  precioUnitario: number;
+  unidadCantidad: string;
+  moneda: string;
+  objetivo:
+    | { tipo: 'resultado_absoluto'; importe: number }
+    | {
+      tipo: 'porcentaje_sobre_capital';
+      tasa: number;
+      capitalFijo: number;
+      capitalPorPesoCostoVariable: number;
+    };
+};
+
+export interface PlaneamientoResultadosData {
+  cantidadNecesaria: number | null;
+  ventasNecesarias: number | null;
+  resultadoLogrado: number | null;
+  basadoEn: 'resultado_absoluto' | 'porcentaje_sobre_capital';
+  unidades: {
+    cantidadNecesaria: string | null;
+    ventasNecesarias: string;
+    resultadoLogrado: string;
+  };
+  motivo?: string;
+}
+
 export interface PuntoCierreHorizonte {
   horizonteMeses: number;
   valor: number | null;
@@ -311,6 +341,18 @@ export function useCapiaIndicators(enabled: boolean) {
       return res.data.data;
     },
     enabled,
+  });
+}
+
+export function usePlaneamientoResultados(companyId: string | undefined) {
+  return useMutation({
+    mutationFn: async (input: PlaneamientoResultadosInput) => {
+      const response = await api.post<{ data: PlaneamientoResultadosData }>(
+        `/companies/${companyId}/analisis/planeamiento-resultados`,
+        input,
+      );
+      return response.data.data;
+    },
   });
 }
 
