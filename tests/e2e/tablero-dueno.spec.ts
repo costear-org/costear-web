@@ -94,6 +94,25 @@ const CAPIA_VIGENTE = {
   },
 };
 
+const PRECIO_TRANSFERENCIA_AM_11 = {
+  data: {
+    equilibrioACostoVariable: 493.42105263157896,
+    equilibrioAMercado: 510.2040816326531,
+    diferencia: 16.783029,
+    criterioDecisionMarginal: 'COSTO_VARIABLE',
+    avisoDecisionMarginal: 'Las decisiones marginales usan costo variable (R9).',
+    usoDeCadaCriterio: {
+      COSTO_VARIABLE: 'Decisiones marginales (R9).',
+      MERCADO: 'Estado de resultados por sector (R24).',
+    },
+    unidades: {
+      equilibrioACostoVariable: 'unidades',
+      equilibrioAMercado: 'unidades',
+      diferencia: 'unidades',
+    },
+  },
+};
+
 const PUNTO_CIERRE = {
   data: {
     moneda: 'ARS',
@@ -343,6 +362,10 @@ async function responderTablero(
         },
       },
     });
+  });
+  await page.route(`**/api/v1/companies/${COMPANY_ID}/analisis/precio-transferencia`, (route) => {
+    if (route.request().method() !== 'GET') return route.fallback();
+    return route.fulfill({ json: PRECIO_TRANSFERENCIA_AM_11 });
   });
   await page.route(`**/api/v1/companies/${COMPANY_ID}/segmentos-analisis`, (route) => {
     if (route.request().method() !== 'GET') return route.fallback();
@@ -836,6 +859,26 @@ testConSesion('ordena AM-06 por aporte al recurso escaso sin ocultar el aporte p
     contentType: 'image/png',
   });
   expect(consola.mensajes, 'errores al mostrar la mezcla óptima').toEqual([]);
+});
+
+testConSesion('muestra AM-11 con los dos equilibrios y el uso de cada criterio', async ({ page, consola }, testInfo) => {
+  await responderTablero(page, TABLERO_COMPLETO);
+  await page.goto(`/owner-dashboard?periodId=${PERIOD_ID}`, { waitUntil: 'domcontentloaded' });
+  await laAppPinto(page);
+
+  const panel = page.getByTestId('precio-transferencia-panel');
+  await expect(panel.getByText('493,42 unidades')).toBeVisible();
+  await expect(panel.getByText('510,20 unidades')).toBeVisible();
+  await expect(panel.getByText('16,78 unidades')).toBeVisible();
+  await expect(panel.getByText('Decisiones marginales (R9).')).toBeVisible();
+  await expect(panel.getByText('Estado de resultados por sector (R24).')).toBeVisible();
+
+  await expandirParaCaptura(page);
+  await testInfo.attach('precio-transferencia-am-11', {
+    body: await page.screenshot({ fullPage: true }),
+    contentType: 'image/png',
+  });
+  expect(consola.mensajes, 'errores al mostrar los precios de transferencia').toEqual([]);
 });
 
 testConSesion('muestra AM-09 por tramos y nunca publica el equilibrio aritmético fuera de rango', async ({ page, consola }, testInfo) => {

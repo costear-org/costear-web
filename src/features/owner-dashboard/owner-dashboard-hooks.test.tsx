@@ -19,6 +19,7 @@ const {
   useMezclaOptima,
   useOwnerDashboard,
   usePlaneamientoResultados,
+  usePrecioTransferencia,
   usePuntoIndiferencia,
   usePuntoCierre,
   useSegmentosAnalisis,
@@ -139,6 +140,20 @@ describe('tablero del dueño', () => {
     await waitFor(() => expect(apiGet).toHaveBeenCalled());
 
     expect(apiGet).toHaveBeenCalledWith('/companies/company-1/analisis/mezcla-optima');
+  });
+
+  it('consulta el precio de transferencia sólo cuando hay un negocio identificado', async () => {
+    const { rerender } = renderHook(({ companyId }) => usePrecioTransferencia(companyId), {
+      wrapper,
+      initialProps: { companyId: undefined as string | undefined },
+    });
+    expect(apiGet).not.toHaveBeenCalled();
+
+    apiGet.mockResolvedValue({ data: { data: { equilibrioACostoVariable: 493.42 } } });
+    rerender({ companyId: 'company-1' });
+    await waitFor(() => expect(apiGet).toHaveBeenCalled());
+
+    expect(apiGet).toHaveBeenCalledWith('/companies/company-1/analisis/precio-transferencia');
   });
 
   it('envía el objetivo al endpoint de planeamiento sin recalcular la respuesta', async () => {

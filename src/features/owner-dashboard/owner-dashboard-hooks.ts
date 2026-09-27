@@ -344,6 +344,23 @@ export interface MezclaOptimaData {
   motivoSinRanking: string | null;
 }
 
+export interface PrecioTransferenciaData {
+  equilibrioACostoVariable: number;
+  equilibrioAMercado: number;
+  diferencia: number;
+  criterioDecisionMarginal: 'COSTO_VARIABLE';
+  avisoDecisionMarginal: string;
+  usoDeCadaCriterio: {
+    COSTO_VARIABLE: string;
+    MERCADO: string;
+  };
+  unidades: {
+    equilibrioACostoVariable: string;
+    equilibrioAMercado: string;
+    diferencia: string;
+  };
+}
+
 export type SegmentoNivel = 'empresa' | 'division' | 'canal' | 'linea';
 
 export interface SegmentoCoproducto {
@@ -499,6 +516,20 @@ export function useMezclaOptima(companyId: string | undefined) {
     queryFn: async () => {
       const response = await api.get<{ data: MezclaOptimaData }>(
         `/companies/${companyId}/analisis/mezcla-optima`,
+      );
+      return response.data.data;
+    },
+    enabled: Boolean(companyId),
+    retry: false,
+  });
+}
+
+export function usePrecioTransferencia(companyId: string | undefined) {
+  return useQuery({
+    queryKey: ['precio-transferencia', companyId],
+    queryFn: async () => {
+      const response = await api.get<{ data: PrecioTransferenciaData }>(
+        `/companies/${companyId}/analisis/precio-transferencia`,
       );
       return response.data.data;
     },

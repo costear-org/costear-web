@@ -37,6 +37,7 @@ import {
   useMezclaOptima,
   useOwnerDashboard,
   usePlaneamientoResultados,
+  usePrecioTransferencia,
   usePuntoIndiferencia,
   usePuntoCierre,
   useSegmentosAnalisis,
@@ -54,6 +55,7 @@ import { CapacidadOciosaPanel } from './CapacidadOciosaPanel';
 import { PlaneamientoResultadosPanel } from './PlaneamientoResultadosPanel';
 import { PuntoIndiferenciaPanel } from './PuntoIndiferenciaPanel';
 import { MezclaOptimaPanel } from './MezclaOptimaPanel';
+import { PrecioTransferenciaPanel } from './PrecioTransferenciaPanel';
 
 const SIN_DATOS = 'Sin datos';
 const INCOMPLETO = 'Incompleto';
@@ -519,6 +521,7 @@ export function OwnerDashboardPage() {
   const equilibrioSectorial = useEquilibrioSectorial(companyId);
   const capacidadOciosa = useCapacidadOciosa(companyId);
   const mezclaOptima = useMezclaOptima(companyId);
+  const precioTransferencia = usePrecioTransferencia(companyId);
   const planeamientoResultados = usePlaneamientoResultados(companyId);
   const puntoIndiferencia = usePuntoIndiferencia(companyId);
   const segmentosAnalisis = useSegmentosAnalisis(companyId);
@@ -700,6 +703,16 @@ export function OwnerDashboardPage() {
             isLoading={companies.isLoading || mezclaOptima.isLoading}
             error={mezclaOptima.isError
               ? apiErrorMessage(mezclaOptima.error)
+              : undefined}
+          />
+        </section>
+
+        <section aria-label="Precio de transferencia interna">
+          <PrecioTransferenciaPanel
+            data={precioTransferencia.data}
+            isLoading={companies.isLoading || precioTransferencia.isLoading}
+            error={precioTransferencia.isError
+              ? `No se pudo cargar el precio de transferencia: ${apiErrorMessage(precioTransferencia.error)}`
               : undefined}
           />
         </section>
