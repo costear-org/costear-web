@@ -34,6 +34,7 @@ import {
   useDeleteSegmentoAnalisis,
   useEquilibrioSectorial,
   useEquilibrioTramos,
+  useMezclaOptima,
   useOwnerDashboard,
   usePlaneamientoResultados,
   usePuntoIndiferencia,
@@ -52,6 +53,7 @@ import { EquilibrioSectorialPanel } from './EquilibrioSectorialPanel';
 import { CapacidadOciosaPanel } from './CapacidadOciosaPanel';
 import { PlaneamientoResultadosPanel } from './PlaneamientoResultadosPanel';
 import { PuntoIndiferenciaPanel } from './PuntoIndiferenciaPanel';
+import { MezclaOptimaPanel } from './MezclaOptimaPanel';
 
 const SIN_DATOS = 'Sin datos';
 const INCOMPLETO = 'Incompleto';
@@ -516,6 +518,7 @@ export function OwnerDashboardPage() {
   const equilibrioTramos = useEquilibrioTramos(companyId, Boolean(companyId));
   const equilibrioSectorial = useEquilibrioSectorial(companyId);
   const capacidadOciosa = useCapacidadOciosa(companyId);
+  const mezclaOptima = useMezclaOptima(companyId);
   const planeamientoResultados = usePlaneamientoResultados(companyId);
   const puntoIndiferencia = usePuntoIndiferencia(companyId);
   const segmentosAnalisis = useSegmentosAnalisis(companyId);
@@ -687,6 +690,16 @@ export function OwnerDashboardPage() {
               : undefined}
             unavailableReason={companies.data && companies.data.length !== 1
               ? 'No se pudo identificar un único negocio para analizar su capacidad.'
+              : undefined}
+          />
+        </section>
+
+        <section aria-label="Ranking por recurso escaso">
+          <MezclaOptimaPanel
+            data={mezclaOptima.data}
+            isLoading={companies.isLoading || mezclaOptima.isLoading}
+            error={mezclaOptima.isError
+              ? apiErrorMessage(mezclaOptima.error)
               : undefined}
           />
         </section>

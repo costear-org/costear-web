@@ -330,6 +330,20 @@ async function responderTablero(
     if (route.request().method() !== 'GET') return route.fallback();
     return route.fulfill({ json: CAPACIDAD_OCIOSA_SIN_DATOS });
   });
+  await page.route(`**/api/v1/companies/${COMPANY_ID}/analisis/mezcla-optima`, (route) => {
+    if (route.request().method() !== 'GET') return route.fallback();
+    return route.fulfill({
+      json: {
+        data: {
+          recurso: null,
+          ranking: [],
+          contribucionMarginalTotal: null,
+          recursoRestante: null,
+          motivoSinRanking: 'No hay un cuello de botella activo; marcá el recurso que limita la producción para calcular el ranking.',
+        },
+      },
+    });
+  });
   await page.route(`**/api/v1/companies/${COMPANY_ID}/segmentos-analisis`, (route) => {
     if (route.request().method() !== 'GET') return route.fallback();
     return route.fulfill({ json: { data: [] } });
@@ -750,6 +764,78 @@ testConSesion('compara dos equipos con AM-04 y declara cuando no existe un punto
     contentType: 'image/png',
   });
   expect(consola.mensajes, 'errores al comparar estructuras').toEqual([]);
+});
+
+testConSesion('ordena AM-06 por aporte al recurso escaso sin ocultar el aporte por unidad', async ({ page, consola }, testInfo) => {
+  await responderTablero(page, TABLERO_COMPLETO);
+  await page.route(`**/api/v1/companies/${COMPANY_ID}/analisis/mezcla-optima`, (route) => route.fulfill({
+    json: {
+      data: {
+        recurso: {
+          id: '00000000-0000-4000-8000-000000000210',
+          clave: 'horas-maquina',
+          disponibleEnPeriodo: 1_000,
+          unidad: 'hora-maquina',
+          nombreUnidad: 'Horas máquina',
+        },
+        ranking: [
+          {
+            productoId: '00000000-0000-4000-8000-000000000212',
+            producto: 'Producto Y',
+            cme: 200,
+            cm: 200,
+            consumoPorUnidad: 1,
+            demandaMaxima: 400,
+            cantidadAsignada: 400,
+            recursoAsignado: 400,
+            unidades: {
+              cme: 'moneda/hora-maquina', cm: 'moneda/unidad de producto',
+              consumoPorUnidad: 'hora-maquina/unidad de producto', demandaMaxima: 'unidades de producto',
+              cantidadAsignada: 'unidades de producto', recursoAsignado: 'hora-maquina',
+            },
+          },
+          {
+            productoId: '00000000-0000-4000-8000-000000000211',
+            producto: 'Producto X',
+            cme: 100,
+            cm: 300,
+            consumoPorUnidad: 3,
+            demandaMaxima: 200,
+            cantidadAsignada: 200,
+            recursoAsignado: 600,
+            unidades: {
+              cme: 'moneda/hora-maquina', cm: 'moneda/unidad de producto',
+              consumoPorUnidad: 'hora-maquina/unidad de producto', demandaMaxima: 'unidades de producto',
+              cantidadAsignada: 'unidades de producto', recursoAsignado: 'hora-maquina',
+            },
+          },
+        ],
+        contribucionMarginalTotal: 140_000,
+        recursoRestante: 0,
+        motivoSinRanking: null,
+      },
+    },
+  }));
+
+  await page.goto(`/owner-dashboard?periodId=${PERIOD_ID}`, { waitUntil: 'domcontentloaded' });
+  await laAppPinto(page);
+
+  const panel = page.getByTestId('mezcla-optima-panel');
+  await expect(panel.getByText('Horas máquina')).toBeVisible();
+  await expect(panel.getByText('$ 140.000,00')).toBeVisible();
+  const filas = panel.getByRole('row');
+  await expect(filas.nth(1)).toContainText('Producto Y');
+  await expect(filas.nth(1)).toContainText('$ 200,00');
+  await expect(filas.nth(2)).toContainText('Producto X');
+  await expect(filas.nth(2)).toContainText('$ 100,00');
+  await expect(filas.nth(2)).toContainText('$ 300,00');
+
+  await expandirParaCaptura(page);
+  await testInfo.attach('mezcla-optima-am-06', {
+    body: await page.screenshot({ fullPage: true }),
+    contentType: 'image/png',
+  });
+  expect(consola.mensajes, 'errores al mostrar la mezcla óptima').toEqual([]);
 });
 
 testConSesion('muestra AM-09 por tramos y nunca publica el equilibrio aritmético fuera de rango', async ({ page, consola }, testInfo) => {

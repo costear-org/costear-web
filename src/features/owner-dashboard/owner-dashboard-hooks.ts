@@ -311,6 +311,39 @@ export interface CapacidadOciosaData {
   };
 }
 
+export interface MezclaOptimaRankingItem {
+  productoId: string;
+  producto: string;
+  cme: number;
+  cm: number;
+  consumoPorUnidad: number;
+  demandaMaxima: number;
+  cantidadAsignada: number;
+  recursoAsignado: number;
+  unidades: {
+    cme: string;
+    cm: string;
+    consumoPorUnidad: string;
+    demandaMaxima: string;
+    cantidadAsignada: string;
+    recursoAsignado: string;
+  };
+}
+
+export interface MezclaOptimaData {
+  recurso: {
+    id: string;
+    clave: string;
+    disponibleEnPeriodo: number;
+    unidad: string;
+    nombreUnidad: string;
+  } | null;
+  ranking: MezclaOptimaRankingItem[];
+  contribucionMarginalTotal: number | null;
+  recursoRestante: number | null;
+  motivoSinRanking: string | null;
+}
+
 export type SegmentoNivel = 'empresa' | 'division' | 'canal' | 'linea';
 
 export interface SegmentoCoproducto {
@@ -457,6 +490,20 @@ export function useCapacidadOciosa(companyId: string | undefined) {
       return response.data.data;
     },
     enabled: Boolean(companyId),
+  });
+}
+
+export function useMezclaOptima(companyId: string | undefined) {
+  return useQuery({
+    queryKey: ['mezcla-optima', companyId],
+    queryFn: async () => {
+      const response = await api.get<{ data: MezclaOptimaData }>(
+        `/companies/${companyId}/analisis/mezcla-optima`,
+      );
+      return response.data.data;
+    },
+    enabled: Boolean(companyId),
+    retry: false,
   });
 }
 
