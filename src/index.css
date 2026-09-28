@@ -277,3 +277,60 @@ input[type='range']:focus-visible {
 .scrollbar-hidden::-webkit-scrollbar {
   display: none; /* Chrome/Safari */
 }
+
+/* ── Landing ──────────────────────────────────────────────────────────────
+ * Hero claro con la grilla de puntos del login, el producto real en el
+ * centro y tarjetas que flotan alrededor. Todo sale de los tokens de marca. */
+.hero-puntos {
+  mask-image: radial-gradient(ellipse 75% 70% at 50% 35%, black 25%, transparent 80%);
+  opacity: 0.35;
+}
+.hero-halo {
+  background:
+    radial-gradient(ellipse 40% 50% at 30% 50%, color-mix(in srgb, var(--color-granate-tenue) 90%, transparent), transparent 70%),
+    radial-gradient(ellipse 35% 45% at 72% 45%, color-mix(in srgb, var(--color-action-soft) 14%, transparent), transparent 70%);
+  filter: blur(30px);
+}
+.hero-desvanecer {
+  background: linear-gradient(to bottom, transparent, var(--color-surface));
+}
+.hero-grilla {
+  background-image:
+    linear-gradient(to right, color-mix(in srgb, var(--color-surface) 6%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--color-surface) 6%, transparent) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, black 20%, transparent 75%);
+}
+.ventana {
+  box-shadow:
+    0 0 0 6px color-mix(in srgb, var(--color-surface) 70%, transparent),
+    0 50px 100px -40px color-mix(in srgb, var(--color-granate-deep) 45%, transparent),
+    0 20px 40px -24px color-mix(in srgb, var(--color-ink) 25%, transparent);
+}
+.telefono {
+  box-shadow: 0 40px 80px -24px color-mix(in srgb, var(--color-ink) 55%, transparent);
+}
+.tarjeta-flotante {
+  box-shadow: 0 24px 48px -20px color-mix(in srgb, var(--color-granate-deep) 35%, transparent);
+}
+.sombra-suave {
+  box-shadow: 0 24px 60px -30px color-mix(in srgb, var(--color-granate-deep) 30%, transparent);
+}
+.panel-granate {
+  background:
+    radial-gradient(ellipse 80% 70% at 85% 0%, color-mix(in srgb, var(--color-action) 35%, transparent), transparent 60%),
+    var(--color-granate-deep);
+}
+
+@keyframes flotar {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -8px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .tarjeta-flotante {
+    animation: flotar 7s ease-in-out infinite;
+  }
+  .tarjeta-flotante:nth-of-type(2n) {
+    animation-delay: -3.5s;
+  }
+}

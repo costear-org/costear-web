@@ -398,7 +398,7 @@ export function AppShell({
             <div className="flex items-center gap-1.5 text-[10.5px] text-ink-soft/75">
               <ShieldCheck className="size-4 text-emerald-600 animate-pulse" />
               <span>
-                Entorno cifrado y auditado académicamente por la Cátedra
+                Conexión cifrada. Cada cuenta ve solo sus datos.
               </span>
             </div>
             <p className="text-[10px] text-ink-soft/60 font-semibold">

@@ -1,65 +1,100 @@
-import { GraduationCap, ArrowRight } from 'lucide-react';
-import iphoneMockupComplete from '@/assets/iphone-mockup-complete.png';
+import { ArrowDown } from 'lucide-react';
+import { InteractiveDotGrid } from '@/components/layout/InteractiveDotGrid';
+import tableroEscritorio from '@/assets/landing/tablero-escritorio.jpg';
+import tableroCelular from '@/assets/landing/tablero-celular.jpg';
+import { BotonWhatsApp } from './BotonWhatsApp';
+import { cn } from '@/lib/utils';
+import { Icono, type NombreIcono } from './Icono';
+import { TarjetaFlotante, Telefono, VentanaNavegador } from './mockups/Dispositivos';
 
-interface HeroSectionProps {
-  onAccessClick: () => void;
-  accessToken: string | null;
-}
-
-export function HeroSection({ onAccessClick, accessToken }: HeroSectionProps) {
+/**
+ * Hero claro, con la grilla de puntos del login reaccionando al mouse y el
+ * producto real: el tablero en escritorio y en el celular, capturados de la
+ * app con datos de ejemplo. Las anotaciones explican qué es cada parte.
+ */
+export function HeroSection() {
   return (
-    <section className="relative bg-surface pb-20 pt-28 lg:pt-32">
-      {/* Destello de luz difuminado behind it */}
-      <div
-        className="pointer-events-none absolute left-1/2 lg:left-auto lg:right-[5%] top-[40%] lg:top-[25%] z-0 h-[600px] w-[600px] lg:h-[750px] lg:w-[750px] -translate-x-1/2 lg:translate-x-0 rounded-full opacity-65 blur-[120px] lg:blur-[160px]"
-        style={{ background: 'radial-gradient(circle, #d13042 0%, #b31929 20%, #e8925a 42%, transparent 60%)' }}
-      />
+    <section className="relative overflow-hidden bg-surface">
+      <div className="hero-puntos pointer-events-none absolute inset-x-0 top-0 h-[46rem]" aria-hidden="true">
+        <InteractiveDotGrid ajustarAlContenedor />
+      </div>
+      <div className="hero-halo pointer-events-none absolute left-1/2 top-[-12rem] h-[40rem] w-[70rem] -translate-x-1/2" aria-hidden="true" />
 
-
-
-      <div className="relative mx-auto grid max-w-7xl xl:max-w-[1360px] items-center gap-12 px-6 lg:grid-cols-2 lg:gap-8 z-20">
-        {/* --- Columna de texto --- */}
-        <div className="relative text-center lg:text-left lg:-mt-4">
-          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-granate/15 bg-granate-tenue px-3 sm:px-4 py-1 sm:py-1.5 text-[10px] sm:text-xs font-semibold text-granate whitespace-nowrap animate-fade-in">
-            <GraduationCap className="size-3.5 shrink-0" />
-            Sello de aval profesional y académico
-          </div>
-
-          <p className="mb-2 text-sm italic text-ink-soft">Costeo profesional, sin fricción.</p>
-
-          <h1 className="mx-auto max-w-2xl text-3xl font-extrabold leading-[1.08] tracking-tight text-ink sm:text-5xl lg:text-[52px] xl:text-[58px] lg:mx-0">
-            Automatizá tus costos, <br className="hidden sm:inline" />protegé tu margen
-          </h1>
-
-          <p className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-ink-soft lg:text-[19px] xl:text-[20px] lg:mx-0">
-            Automatizá tus costeos por inflación, dólar y paritarias. <br className="hidden lg:inline" />
-            Sincronizá el BCRA e INDEC en tiempo real y recibí alertas <br className="hidden lg:inline" />
-            antes de que el margen de un cliente se escape.
-          </p>
-
-          <div className="mt-10 flex items-center justify-center lg:justify-start">
-            <button
-              onClick={onAccessClick}
-              className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-action px-7 py-3.5 text-sm font-bold text-white shadow-lg shadow-action/20 transition-all hover:bg-action-soft hover:shadow-xl"
-            >
-              {accessToken ? 'Ir al Panel' : 'Acceder al Panel'}
-              <ArrowRight className="size-4" />
-            </button>
-          </div>
+      <div className="relative mx-auto max-w-7xl px-4 pt-28 text-center sm:px-6 md:pt-32">
+        <p className="mx-auto inline-flex items-center gap-2 rounded-full border border-line bg-surface/80 px-4 py-1.5 text-sm text-ink-soft backdrop-blur-md">
+          <span className="size-1.5 rounded-full bg-action" aria-hidden="true" />
+          Costos y precios para negocios que fabrican
+        </p>
+        <h1 className="mx-auto mt-7 max-w-4xl text-5xl font-medium leading-[1.02] tracking-[-0.04em] text-granate-deep sm:text-6xl lg:text-[4.75rem]">
+          Remarcá con números,{' '}
+          <br className="hidden sm:block" />
+          no a ojo.
+        </h1>
+        <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-ink-soft">
+          CosteAR calcula lo que te cuesta cada producto y te dice a cuánto venderlo cuando se mueven el
+          dólar y la inflación.
+        </p>
+        <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
+          <BotonWhatsApp />
+          <a
+            href="#funciones"
+            className="inline-flex items-center gap-2 rounded-full border border-line bg-surface/80 px-6 py-4 text-base font-medium text-ink backdrop-blur-md transition-colors hover:border-granate/40"
+          >
+            Ver qué hace
+            <ArrowDown className="size-4" aria-hidden="true" />
+          </a>
         </div>
 
-        {/* --- Columna del mockup (iPhone Fotorrealista de Usuario en 3D con Screenshot Real) --- */}
-        <div className="relative flex select-none items-center justify-center py-4 lg:-mt-10">
-          {/* Contenedor del Teléfono (Imagen Mockup Integrada con Sombra Avanzada, Mayor Escala en Mobile y Proporcionado en Desktop) */}
-          <div className="relative w-full max-w-[800px] lg:max-w-none scale-[1.5] -translate-y-8 sm:scale-100 sm:translate-y-0 lg:scale-100 xl:scale-105 origin-center my-14 sm:my-0 filter drop-shadow-[0_50px_80px_rgba(0,0,0,0.28)] drop-shadow-[0_25px_50px_rgba(179,25,41,0.18)]">
-            <img 
-              src={iphoneMockupComplete} 
-              alt="iPhone 14 Pro CosteAR" 
-              className="w-full h-auto pointer-events-none"
-            />
-          </div>
+        <p className="mt-4 text-sm text-ink-soft">Te responde una persona del equipo, sin compromiso.</p>
+
+        <div className="relative mx-auto mt-14 max-w-5xl">
+          <VentanaNavegador
+            src={tableroEscritorio}
+            alt="El tablero de CosteAR en la computadora: dólar, inflación, costo por unidad, contribución y punto de equilibrio"
+            className="relative z-0 hidden w-full sm:block"
+          />
+          <Telefono
+            src={tableroCelular}
+            alt="El tablero de CosteAR en el celular"
+            className="relative z-10 mx-auto w-64 sm:absolute sm:-bottom-12 sm:-right-4 sm:w-48 lg:w-52 xl:-right-24"
+          />
+
+          {/* Anotaciones: explican partes reales del tablero, no agregan datos. */}
+          <Anotacion
+            icono="capas"
+            titulo="Cada número con su origen"
+            texto="Tocás un valor y ves de qué dato sale."
+            className="-left-48 top-[10%]"
+          />
+          <Anotacion
+            icono="flecha"
+            titulo="Dólar e inflación oficiales"
+            texto="Entran solos desde el BCRA y el INDEC."
+            className="-left-48 top-[46%]"
+          />
+          <Anotacion
+            icono="balanza"
+            titulo="Lo que te deja tu negocio"
+            texto="Costo, contribución y punto de equilibrio."
+            className="-right-48 top-[8%]"
+          />
         </div>
+        <p className="relative pb-16 pt-6 text-xs text-ink-soft sm:pt-20">Capturas de CosteAR con datos de ejemplo.</p>
       </div>
     </section>
+  );
+}
+
+function Anotacion({ icono, titulo, texto, className }: { icono: NombreIcono; titulo: string; texto: string; className?: string }) {
+  return (
+    <TarjetaFlotante className={cn('absolute z-20 hidden w-52 items-start gap-3 xl:flex', className)}>
+      <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-granate-tenue">
+        <Icono nombre={icono} className="size-5" />
+      </span>
+      <span>
+        <span className="block text-sm font-semibold text-ink">{titulo}</span>
+        <span className="mt-0.5 block text-xs leading-snug text-ink-soft">{texto}</span>
+      </span>
+    </TarjetaFlotante>
   );
 }

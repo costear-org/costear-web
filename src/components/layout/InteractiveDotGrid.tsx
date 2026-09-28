@@ -1,6 +1,13 @@
 import { useEffect, useRef } from 'react';
 
-export function InteractiveDotGrid() {
+/**
+ * Grilla de puntos que reacciona al mouse.
+ *
+ * Por defecto ocupa la ventana (login y registro). Con `ajustarAlContenedor`
+ * toma el tamaño de su contenedor y mide el mouse relativo al canvas, para
+ * usarla dentro de una sección que scrollea, como el hero de la landing.
+ */
+export function InteractiveDotGrid({ ajustarAlContenedor = false }: { ajustarAlContenedor?: boolean } = {}) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const mouseRef = useRef({ x: -1000, y: -1000, active: false });
 
@@ -16,21 +23,23 @@ export function InteractiveDotGrid() {
 
     const resize = () => {
       const dpr = window.devicePixelRatio || 1;
-      width = window.innerWidth;
-      height = window.innerHeight;
+      const contenedor = canvas.parentElement;
+      width = ajustarAlContenedor && contenedor ? contenedor.clientWidth : window.innerWidth;
+      height = ajustarAlContenedor && contenedor ? contenedor.clientHeight : window.innerHeight;
       canvas.width = width * dpr;
       canvas.height = height * dpr;
       canvas.style.width = `${width}px`;
       canvas.style.height = `${height}px`;
-      ctx.scale(dpr, dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
 
     window.addEventListener('resize', resize);
     resize();
 
     const handleMouseMove = (e: MouseEvent) => {
-      mouseRef.current.x = e.clientX;
-      mouseRef.current.y = e.clientY;
+      const rect = ajustarAlContenedor ? canvas.getBoundingClientRect() : { left: 0, top: 0 };
+      mouseRef.current.x = e.clientX - rect.left;
+      mouseRef.current.y = e.clientY - rect.top;
       mouseRef.current.active = true;
     };
 
@@ -76,9 +85,16 @@ export function InteractiveDotGrid() {
     generateGrid();
 
     // Re-generate grid when window size changes
+    // Se difiere al próximo cuadro: redimensionar el canvas dentro del callback
+    // puede volver a notificar al observer y WebKit lo reporta como error
+    // ("ResizeObserver loop completed with undelivered notifications").
+    let cuadroResize = 0;
     const resizeObserver = new ResizeObserver(() => {
-      resize();
-      generateGrid();
+      cancelAnimationFrame(cuadroResize);
+      cuadroResize = requestAnimationFrame(() => {
+        resize();
+        generateGrid();
+      });
     });
     resizeObserver.observe(canvas.parentElement || document.body);
 
@@ -138,9 +154,10 @@ export function InteractiveDotGrid() {
       window.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseleave', handleMouseLeave);
       resizeObserver.disconnect();
+      cancelAnimationFrame(cuadroResize);
       cancelAnimationFrame(animationFrameId);
     };
-  }, []);
+  }, [ajustarAlContenedor]);
 
-  return <canvas ref={canvasRef} className="absolute inset-0 z-0 pointer-events-none" />;
+  return <canvas ref={canvasRef} className="absolute inset-0 z-0 block pointer-events-none" />;
 }

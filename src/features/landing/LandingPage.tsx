@@ -4,16 +4,20 @@ import { useAuthStore } from '@/stores/auth-store';
 import { AccessGateModal } from './AccessGateModal';
 import { Navbar } from './components/Navbar';
 import { HeroSection } from './components/HeroSection';
-import { MetricsSection } from './components/MetricsSection';
-import { PlatformSection } from './components/PlatformSection';
-import { FeaturesSection } from './components/FeaturesSection';
-import { HowItWorksSection } from './components/HowItWorksSection';
-import { AcademicCertification } from './components/AcademicCertification';
-import { PricingSection } from './components/PricingSection';
-import { CTASection } from './components/CTASection';
+import { FuentesSection } from './components/FuentesSection';
+import { FuncionesSection } from './components/FuncionesSection';
+import { PasosSection } from './components/PasosSection';
+import { MetodoSection } from './components/MetodoSection';
+import { PreguntasSection } from './components/PreguntasSection';
+import { CierreSection } from './components/CierreSection';
 import { FooterSection } from './components/FooterSection';
-import { FloatingCountdown } from './components/FloatingCountdown';
 
+/**
+ * La landing tiene un objetivo: que la persona nos escriba. El producto se
+ * muestra con sus propias pantallas (datos de ejemplo, marcados como tales),
+ * el respaldo son resultados verificables y las dudas que frenan una venta
+ * por conversación se responden antes del cierre.
+ */
 export function LandingPage() {
   const { accessToken, user } = useAuthStore();
   const navigate = useNavigate();
@@ -28,47 +32,25 @@ export function LandingPage() {
   };
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-surface text-ink antialiased selection:bg-granate selection:text-white">
-      {/* --- HEADER / NAVBAR --- */}
+    <div className="min-h-screen overflow-x-hidden bg-surface text-ink antialiased selection:bg-granate selection:text-surface">
       <Navbar onAccessClick={handleAccessClick} />
+      <main>
+        <HeroSection />
+        <FuentesSection />
+        <FuncionesSection />
+        <PasosSection />
+        <MetodoSection />
+        <PreguntasSection />
+        <CierreSection />
+      </main>
+      <FooterSection onAccessClick={handleAccessClick} />
 
-      {/* --- HERO --- */}
-      <HeroSection onAccessClick={handleAccessClick} accessToken={accessToken} />
-
-      {/* --- MÉTRICAS --- */}
-      <MetricsSection />
-
-      {/* --- DISPONIBILIDAD MULTIPLATAFORMA --- */}
-      <PlatformSection />
-
-      {/* --- CARACTERÍSTICAS (LOS 3 ELEMENTOS DEL COSTO) --- */}
-      <FeaturesSection />
-
-      {/* --- SECCIÓN CÓMO FUNCIONA --- */}
-      <HowItWorksSection />
-
-      {/* --- CERTIFICACIÓN ACADÉMICA UNT --- */}
-      <AcademicCertification />
-
-      {/* --- PLANES DE MEMBRESÍA --- */}
-      <PricingSection onAccessClick={handleAccessClick} />
-
-      {/* --- SECCIÓN CTA --- */}
-      <CTASection onAccessClick={handleAccessClick} />
-
-      {/* --- FOOTER --- */}
-      <FooterSection />
-
-      {/* --- MODAL ACCESO --- */}
       {showGate && (
         <AccessGateModal
           onClose={() => setShowGate(false)}
           onSuccess={() => navigate({ to: '/login' })}
         />
       )}
-
-      {/* --- CONTADOR DE LANZAMIENTO FLOTANTE --- */}
-      <FloatingCountdown />
     </div>
   );
 }

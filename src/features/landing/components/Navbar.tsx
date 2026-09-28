@@ -1,114 +1,80 @@
-import { useState } from 'react';
-import { LogIn, Menu, X } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { useAuthStore } from '@/stores/auth-store';
 import { CosteARLogo } from '@/components/layout/CosteARLogo';
 import { cn } from '@/lib/utils';
+import { WHATSAPP_URL } from '../contacto';
 
 interface NavbarProps {
   onAccessClick: () => void;
 }
 
+const SECCIONES = [
+  { href: '#funciones', texto: 'Qué hace' },
+  { href: '#como-empezamos', texto: 'Cómo empezamos' },
+  { href: '#metodo', texto: 'El método' },
+  { href: '#preguntas', texto: 'Preguntas' },
+];
+
+/**
+ * Barra flotante: transparente sobre el hero y, al bajar, una cápsula de
+ * vidrio que acompaña el scroll con la acción siempre a mano.
+ */
 export function Navbar({ onAccessClick }: NavbarProps) {
   const { accessToken } = useAuthStore();
-  const [isOpen, setIsOpen] = useState(false);
+  const [bajo, setBajo] = useState(false);
 
-  const handleLinkClick = () => {
-    setIsOpen(false);
-  };
+  useEffect(() => {
+    const alScrollear = () => setBajo(window.scrollY > 24);
+    alScrollear();
+    window.addEventListener('scroll', alScrollear, { passive: true });
+    return () => window.removeEventListener('scroll', alScrollear);
+  }, []);
 
   return (
-    <header className={cn(
-      "fixed top-4 left-1/2 z-50 w-[calc(100%-2rem)] max-w-5xl lg:max-w-7xl xl:max-w-[1360px] -translate-x-1/2 border border-line/80 bg-surface/80 px-4 py-2.5 md:px-6 md:py-3 shadow-[0_8px_32px_rgba(0,0,0,0.06)] backdrop-blur-md transition-all duration-300 ease-in-out",
-      isOpen ? "rounded-2xl pb-5" : "rounded-2xl md:rounded-full"
-    )}>
-
-      {/* ── Mobile top bar: brand izquierda | hamburger derecha ── */}
-      <div className="flex items-center justify-between md:hidden">
-        {/* Brand */}
-        <div className="flex items-center gap-2 shrink-0">
-          <span className="flex h-7 w-7 shrink-0 items-center justify-center">
-            <CosteARLogo className="h-full w-full text-granate" />
+    <header className="fixed inset-x-0 top-0 z-50 px-3 pt-3 sm:px-6 sm:pt-4">
+      <div
+        className={cn(
+          'mx-auto flex max-w-6xl items-center justify-between gap-4 rounded-full py-2 pl-4 pr-2 transition-all duration-300',
+          bajo ? 'border border-line bg-surface/80 shadow-[0_12px_32px_-20px_color-mix(in_srgb,var(--color-granate-deep)_40%,transparent)] backdrop-blur-xl' : 'border border-transparent',
+        )}
+      >
+        <span className="flex items-center gap-2">
+          <span className="size-8">
+            <CosteARLogo className="size-full text-granate" animate={false} />
           </span>
-          <span className="text-sm font-extrabold tracking-tight text-ink font-outfit">CosteAR</span>
-        </div>
+          <span className="text-lg font-semibold tracking-tight text-granate-deep">CosteAR</span>
+        </span>
 
-        {/* Hamburger */}
-        <button
-          type="button"
-          onClick={() => setIsOpen(!isOpen)}
-          className="cursor-pointer p-1.5 rounded-lg text-ink-soft hover:text-ink hover:bg-zinc-50/60 transition-all"
-          aria-label="Toggle menu"
-        >
-          {isOpen ? <X className="size-5" /> : <Menu className="size-5" />}
-        </button>
-      </div>
-
-      {/* ── Desktop top bar: flex normal ── */}
-      <div className="hidden md:flex items-center justify-between">
-        {/* Brand */}
-        <div className="flex items-center gap-2.5 shrink-0">
-          <span className="flex h-8 w-8 shrink-0 items-center justify-center">
-            <CosteARLogo className="h-full w-full text-granate" />
-          </span>
-          <span className="text-base font-extrabold tracking-tight text-ink font-outfit">CosteAR</span>
-        </div>
-
-        {/* Nav links */}
-        <nav className="flex items-center gap-8 text-xs font-semibold text-ink-soft">
-          <a href="#features" className="transition-colors hover:text-ink">Características</a>
-          <a href="#como-funciona" className="transition-colors hover:text-ink">Cómo funciona</a>
-          <a href="mailto:proyectocostear@gmail.com" className="transition-colors hover:text-ink">Contacto</a>
+        <nav aria-label="Secciones" className="hidden items-center gap-1 lg:flex">
+          {SECCIONES.map((s) => (
+            <a
+              key={s.href}
+              href={s.href}
+              className="rounded-full px-4 py-2 text-sm text-ink-soft transition-colors hover:bg-surface-alt hover:text-ink"
+            >
+              {s.texto}
+            </a>
+          ))}
         </nav>
 
-        {/* Acceso */}
-        <button
-          type="button"
-          onClick={onAccessClick}
-          className="inline-flex cursor-pointer items-center gap-1.5 rounded-full border border-ink/15 bg-surface px-4 py-1.5 text-[11px] font-semibold text-ink transition-all duration-200 hover:border-granate hover:text-granate"
-        >
-          {accessToken ? 'Ir al Panel' : 'Acceso Equipo'}
-          <LogIn className="size-3.5" />
-        </button>
-      </div>
-
-      {/* ── Mobile dropdown ── */}
-      {isOpen && (
-        <div className="mt-4 pt-4 border-t border-line/50 flex flex-col gap-4 animate-rise md:hidden">
-          <nav className="flex flex-col gap-1.5 text-[13px] font-bold text-ink-soft">
-            <a
-              href="#features"
-              onClick={handleLinkClick}
-              className="px-3 py-2 rounded-xl hover:bg-granate-tenue/60 hover:text-granate transition-all"
-            >
-              Características
-            </a>
-            <a
-              href="#como-funciona"
-              onClick={handleLinkClick}
-              className="px-3 py-2 rounded-xl hover:bg-granate-tenue/60 hover:text-granate transition-all"
-            >
-              Cómo funciona
-            </a>
-            <a
-              href="mailto:proyectocostear@gmail.com"
-              onClick={handleLinkClick}
-              className="px-3 py-2 rounded-xl hover:bg-granate-tenue/60 hover:text-granate transition-all"
-            >
-              Contacto
-            </a>
-          </nav>
-          <div className="pt-2 border-t border-line/30">
-            <button
-              type="button"
-              onClick={() => { onAccessClick(); handleLinkClick(); }}
-              className="w-full inline-flex cursor-pointer items-center justify-center gap-2 rounded-full border border-ink/15 bg-surface px-4 py-2.5 text-xs font-bold text-ink transition-all duration-200 hover:border-granate hover:text-granate shadow-sm"
-            >
-              {accessToken ? 'Ir al Panel' : 'Acceso Equipo'}
-              <LogIn className="size-4" />
-            </button>
-          </div>
+        <div className="flex items-center gap-1.5">
+          <button
+            type="button"
+            onClick={onAccessClick}
+            className="cursor-pointer rounded-full px-4 py-2 text-sm font-medium text-ink transition-colors hover:bg-surface-alt"
+          >
+            {accessToken ? 'Ir al panel' : 'Ingresar'}
+          </button>
+          <a
+            href={WHATSAPP_URL}
+            target="_blank"
+            rel="noreferrer"
+            className="hidden rounded-full bg-granate px-5 py-2.5 text-sm font-semibold text-surface transition-colors hover:bg-granate-deep sm:inline-block"
+          >
+            Hablemos
+          </a>
         </div>
-      )}
+      </div>
     </header>
   );
 }
