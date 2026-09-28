@@ -44,7 +44,7 @@ rebotes_de_guarda: 2
 
 ## Qué quedó afuera
 
-- Corregir el pie de la app que afirma un aval académico (`src/components/layout/AppShell.tsx`).
+- ~~Corregir el pie de la app que afirma un aval académico~~: corregido en este mismo PR.
 - Capturas reales del simulador y del panel de carga: necesitan más respuestas de la API simuladas. Hoy esos paneles están dibujados.
 - Testimonio o logo de cliente, hasta que haya permiso para nombrarlo.
 - Medición de conversiones (clicks en WhatsApp o email).
