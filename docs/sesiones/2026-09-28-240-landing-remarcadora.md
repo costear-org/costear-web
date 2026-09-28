@@ -1,7 +1,7 @@
 ---
 issue: 240
 repo: CosteAR-frontend
-pr: pendiente
+pr: 241
 rama: feat/landing-remarcadora
 agente: claude-code
 modelo: claude-opus-5-5
