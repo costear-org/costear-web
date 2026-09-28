@@ -277,3 +277,59 @@ input[type='range']:focus-visible {
 .scrollbar-hidden::-webkit-scrollbar {
   display: none; /* Chrome/Safari */
 }
+
+/* ── Landing: la remarcadora ──────────────────────────────────────────────
+ * El motivo de la landing es el sticker de la remarcadora de precios: los
+ * viejos quedan apagados y torcidos debajo, el que calcula CosteAR se estampa
+ * arriba en granate. Todo sale de los tokens de marca. */
+.sticker {
+  --giro: 0deg;
+  padding: 0.35em 0.6em 0.3em;
+  border-radius: 6px;
+  line-height: 1.1;
+  white-space: nowrap;
+  transform: rotate(var(--giro));
+  background: var(--color-surface);
+  color: var(--color-ink);
+  border: 1px solid var(--color-line-strong);
+  box-shadow:
+    0 1px 0 var(--color-line),
+    0 10px 18px -12px color-mix(in srgb, var(--color-granate-deep) 45%, transparent);
+}
+h2.sticker {
+  white-space: normal;
+}
+.sticker-viejo {
+  background: var(--color-granate-tenue);
+  color: color-mix(in srgb, var(--color-granate) 70%, var(--color-ink-soft));
+  border-color: color-mix(in srgb, var(--color-granate) 18%, transparent);
+}
+.sticker-nuevo {
+  background: var(--color-granate);
+  color: var(--color-surface);
+  border-color: var(--color-granate-deep);
+}
+
+@keyframes estampar {
+  0% {
+    opacity: 0;
+    transform: translateY(-18px) rotate(calc(var(--giro) - 6deg)) scale(1.18);
+  }
+  70% {
+    opacity: 1;
+    transform: translateY(0) rotate(var(--giro)) scale(0.97);
+  }
+  100% {
+    opacity: 1;
+    transform: rotate(var(--giro)) scale(1);
+  }
+}
+.sticker-estampado {
+  animation: estampar 0.42s cubic-bezier(0.3, 0.7, 0.4, 1) 0.5s both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sticker-estampado {
+    animation: none;
+  }
+}

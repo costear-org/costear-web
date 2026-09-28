@@ -1,13 +1,32 @@
-export function FooterSection() {
+import { CosteARLogo } from '@/components/layout/CosteARLogo';
+import { EMAIL_URL, WHATSAPP_URL } from '../contacto';
+
+interface FooterSectionProps {
+  onAccessClick: () => void;
+}
+
+export function FooterSection({ onAccessClick }: FooterSectionProps) {
   return (
-    <footer className="border-t border-line/60 py-10 bg-surface">
-      <div className="mx-auto max-w-7xl px-6 flex flex-col sm:flex-row items-center justify-start gap-6 sm:gap-12 text-xs text-ink-soft">
-        <span>CosteAR · 2026 · Hecho en Tucumán 🇦🇷</span>
-        <div className="flex gap-6">
-          <a href="https://wa.me/5493816580360" target="_blank" rel="noreferrer" className="hover:text-ink transition-colors">WhatsApp</a>
-          <a href="mailto:proyectocostear@gmail.com" className="hover:text-ink transition-colors">Email</a>
-          <a href="https://www.instagram.com/coste_ar" target="_blank" rel="noreferrer" className="hover:text-ink transition-colors">Instagram</a>
+    <footer className="border-t border-line bg-surface">
+      <div className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-10 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+        <div className="flex items-center gap-2.5">
+          <span className="size-7">
+            <CosteARLogo className="size-full text-granate" animate={false} />
+          </span>
+          <span className="font-extrabold text-granate-deep">CosteAR</span>
+          <span className="text-sm text-ink-soft">Hecho en Tucumán, Argentina</span>
         </div>
+        <nav aria-label="Contacto" className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-ink-soft">
+          <a href={WHATSAPP_URL} target="_blank" rel="noreferrer" className="hover:text-granate">
+            WhatsApp
+          </a>
+          <a href={EMAIL_URL} className="hover:text-granate">
+            Email
+          </a>
+          <button type="button" onClick={onAccessClick} className="cursor-pointer hover:text-granate">
+            Ingresar
+          </button>
+        </nav>
       </div>
     </footer>
   );
