@@ -4,6 +4,7 @@ import { CosteARLogo } from '@/components/layout/CosteARLogo';
 import { cn } from '@/lib/utils';
 import { WHATSAPP_URL } from '../contacto';
 import { LogoWhatsApp } from './LogoWhatsApp';
+import { irASeccion } from '../ir-a-seccion';
 
 interface NavbarProps {
   onAccessClick: () => void;
@@ -74,6 +75,7 @@ export function Navbar({ onAccessClick }: NavbarProps) {
             <a
               key={s.href}
               href={s.href}
+              onClick={(e) => irASeccion(e, s.href)}
               aria-current={activa === s.href ? 'location' : undefined}
               className={cn(
                 'relative rounded-full px-4 py-2 text-sm transition-colors hover:text-ink',

@@ -3,6 +3,7 @@ import { InteractiveDotGrid } from '@/components/layout/InteractiveDotGrid';
 import tableroEscritorio from '@/assets/landing/tablero-escritorio.jpg';
 import tableroCelular from '@/assets/landing/tablero-celular.jpg';
 import { BotonWhatsApp } from './BotonWhatsApp';
+import { irASeccion } from '../ir-a-seccion';
 import { cn } from '@/lib/utils';
 import { Icono, type NombreIcono } from './Icono';
 import { TarjetaFlotante, Telefono, VentanaNavegador } from './mockups/Dispositivos';
@@ -38,6 +39,7 @@ export function HeroSection() {
           <BotonWhatsApp />
           <a
             href="#funciones"
+            onClick={(e) => irASeccion(e, '#funciones')}
             className="inline-flex items-center gap-2 rounded-full border border-line bg-surface/80 px-6 py-4 text-base font-medium text-ink backdrop-blur-md transition-colors hover:border-granate/40"
           >
             Ver qué hace

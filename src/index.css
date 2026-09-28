@@ -281,6 +281,10 @@ input[type='range']:focus-visible {
 /* ── Landing ──────────────────────────────────────────────────────────────
  * Hero claro con la grilla de puntos del login, el producto real en el
  * centro y tarjetas que flotan alrededor. Todo sale de los tokens de marca. */
+/* Las secciones frenan debajo de la barra fija al llegar desde un link. */
+main section[id] {
+  scroll-margin-top: 6rem;
+}
 .hero-puntos {
   mask-image: radial-gradient(ellipse 75% 70% at 50% 35%, black 25%, transparent 80%);
   opacity: 0.35;

@@ -88,3 +88,14 @@ test('la barra marca la sección en la que está la persona y sigue fija al baja
   await expect(barra.getByRole('link', { name: 'Qué hace' })).not.toHaveAttribute('aria-current', 'location');
   expect(await barra.evaluate((el) => el.getBoundingClientRect().top)).toBe(0);
 });
+
+test('los links de sección bajan hasta la sección sin cambiar la dirección', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name.startsWith('Mobile'), 'los links de sección solo se muestran en escritorio');
+
+  await page.goto('/');
+  await laAppPinto(page);
+
+  await page.getByRole('banner').getByRole('link', { name: 'Qué hace' }).click();
+  await expect(page.locator('#funciones')).toBeInViewport();
+  expect(new URL(page.url()).hash).toBe('');
+});
