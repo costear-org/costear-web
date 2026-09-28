@@ -20,7 +20,7 @@ test('el hero dice la promesa y lleva a WhatsApp', async ({ page, consola }) => 
     'href',
     /^https:\/\/wa\.me\/5493816580360\?text=/,
   );
-  await expect(hero.getByText('Capturas de CosteAR con datos de ejemplo.')).toBeVisible();
+  await expect(hero.getByText('Capturas de Costear con datos de ejemplo.')).toBeVisible();
 
   expect(consola.mensajes).toEqual([]);
 });
@@ -72,4 +72,19 @@ test('Ingresar abre el acceso del equipo', async ({ page }) => {
 
   await page.getByRole('banner').getByRole('button', { name: 'Ingresar' }).click();
   await expect(page.getByRole('button', { name: 'Cerrar', exact: true })).toBeVisible();
+});
+
+test('la barra marca la sección en la que está la persona y sigue fija al bajar', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name.startsWith('Mobile'), 'los links de sección solo se muestran en escritorio');
+
+  await page.goto('/');
+  await laAppPinto(page);
+
+  await page.locator('#metodo').scrollIntoViewIfNeeded();
+  await page.evaluate(() => document.querySelector('#metodo')?.scrollIntoView({ block: 'center' }));
+
+  const barra = page.getByRole('banner');
+  await expect(barra.getByRole('link', { name: 'El método' })).toHaveAttribute('aria-current', 'location');
+  await expect(barra.getByRole('link', { name: 'Qué hace' })).not.toHaveAttribute('aria-current', 'location');
+  expect(await barra.evaluate((el) => el.getBoundingClientRect().top)).toBe(0);
 });

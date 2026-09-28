@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useNavigate } from '@tanstack/react-router';
 import { useAuthStore } from '@/stores/auth-store';
 import { AccessGateModal } from './AccessGateModal';
@@ -33,7 +34,9 @@ export function LandingPage() {
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-surface text-ink antialiased selection:bg-granate selection:text-surface">
-      <Navbar onAccessClick={handleAccessClick} />
+      {/* Al body: la app vive dentro de un contenedor animado con transform (main.tsx),
+          y un transform en un ancestro hace que position: fixed deje de fijarse a la ventana. */}
+      {createPortal(<Navbar onAccessClick={handleAccessClick} />, document.body)}
       <main>
         <HeroSection />
         <FuentesSection />
@@ -45,12 +48,11 @@ export function LandingPage() {
       </main>
       <FooterSection onAccessClick={handleAccessClick} />
 
-      {showGate && (
-        <AccessGateModal
-          onClose={() => setShowGate(false)}
-          onSuccess={() => navigate({ to: '/login' })}
-        />
-      )}
+      {showGate &&
+        createPortal(
+          <AccessGateModal onClose={() => setShowGate(false)} onSuccess={() => navigate({ to: '/login' })} />,
+          document.body,
+        )}
     </div>
   );
 }

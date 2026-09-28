@@ -74,7 +74,7 @@ export function AccessGateModal({ onClose, onSuccess }: Props) {
           Área de Acceso Restringido
         </h2>
         <p className="mb-6 text-xs leading-relaxed text-ink-soft">
-          Para ver el panel del equipo de CosteAR, ingresá la contraseña autorizada.
+          Para ver el panel del equipo de Costear, ingresá la contraseña autorizada.
         </p>
 
         {/* Form Input */}
