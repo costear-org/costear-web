@@ -31,7 +31,7 @@ export function PasosSection() {
             Empezar es una charla
           </h2>
           <p className="mt-5 text-lg leading-relaxed text-ink-soft">
-            No hay formularios ni planes para elegir. Te escuchamos y adaptamos CosteAR a tu negocio.
+            No hay formularios ni planes para elegir. Te escuchamos y adaptamos Costear a tu negocio.
           </p>
         </div>
 

@@ -17,7 +17,7 @@ export function CierreSection() {
               ¿Cuándo fue la última vez que remarcaste con números?
             </h2>
             <p className="mt-5 max-w-lg text-lg leading-relaxed text-surface/70">
-              Contanos qué fabricás y cómo calculás tus precios hoy. En una charla vemos si CosteAR te sirve y
+              Contanos qué fabricás y cómo calculás tus precios hoy. En una charla vemos si Costear te sirve y
               qué habría que adaptar.
             </p>
             <div className="mt-9">

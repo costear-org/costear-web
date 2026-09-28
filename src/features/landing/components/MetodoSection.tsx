@@ -28,7 +28,7 @@ export function MetodoSection() {
           </h2>
           <p className="text-lg leading-relaxed text-ink-soft">
             El cálculo sigue lo que se enseña en Costos I y Costos II de la Universidad Nacional de Tucumán.
-            Resolvimos el ejercicio completo de la cátedra y CosteAR llega a los mismos resultados.
+            Resolvimos el ejercicio completo de la cátedra y Costear llega a los mismos resultados.
           </p>
         </div>
 

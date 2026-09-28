@@ -2,7 +2,7 @@ import { Icono, type NombreIcono } from './Icono';
 
 /**
  * Donde otras landings ponen logos de clientes, acá van las fuentes reales
- * con las que trabaja CosteAR. No son socios: son de dónde salen los datos y
+ * con las que trabaja Costear. No son socios: son de dónde salen los datos y
  * el método, y así se dice.
  */
 const FUENTES: { icono: NombreIcono; titulo: string; detalle: string }[] = [
