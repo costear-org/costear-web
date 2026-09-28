@@ -4,19 +4,19 @@ import { useAuthStore } from '@/stores/auth-store';
 import { AccessGateModal } from './AccessGateModal';
 import { Navbar } from './components/Navbar';
 import { HeroSection } from './components/HeroSection';
-import { DosErroresSection } from './components/DosErroresSection';
-import { RemarcadoraSection } from './components/RemarcadoraSection';
-import { EcuacionSection } from './components/EcuacionSection';
-import { RespaldoSection } from './components/RespaldoSection';
-import { PreguntasFrecuentesSection } from './components/PreguntasFrecuentesSection';
+import { FuentesSection } from './components/FuentesSection';
+import { FuncionesSection } from './components/FuncionesSection';
+import { PasosSection } from './components/PasosSection';
+import { MetodoSection } from './components/MetodoSection';
+import { PreguntasSection } from './components/PreguntasSection';
 import { CierreSection } from './components/CierreSection';
 import { FooterSection } from './components/FooterSection';
 
 /**
- * La landing tiene un solo objetivo: que la persona nos escriba. Todo lo
- * demás está ordenado para llevarla ahí: la promesa, el problema, probarlo,
- * cómo funciona, por qué creerle, las dudas que frenan y el cierre. El
- * lenguaje visual es la remarcadora de precios.
+ * La landing tiene un objetivo: que la persona nos escriba. El producto se
+ * muestra con sus propias pantallas (datos de ejemplo, marcados como tales),
+ * el respaldo son resultados verificables y las dudas que frenan una venta
+ * por conversación se responden antes del cierre.
  */
 export function LandingPage() {
   const { accessToken, user } = useAuthStore();
@@ -36,11 +36,11 @@ export function LandingPage() {
       <Navbar onAccessClick={handleAccessClick} />
       <main>
         <HeroSection />
-        <DosErroresSection />
-        <RemarcadoraSection />
-        <EcuacionSection />
-        <RespaldoSection />
-        <PreguntasFrecuentesSection />
+        <FuentesSection />
+        <FuncionesSection />
+        <PasosSection />
+        <MetodoSection />
+        <PreguntasSection />
         <CierreSection />
       </main>
       <FooterSection onAccessClick={handleAccessClick} />
