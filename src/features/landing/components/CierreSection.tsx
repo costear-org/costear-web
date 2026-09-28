@@ -1,17 +1,18 @@
-import { calcularEjemplo, enPesos } from '../demo-margen';
+import tableroCelular from '@/assets/landing/tablero-celular.jpg';
 import { BotonWhatsApp } from './BotonWhatsApp';
-import { Icono } from './Icono';
+import { Telefono } from './mockups/Dispositivos';
 
-const antes = calcularEjemplo(0);
-const despues = calcularEjemplo(0.1);
-
+/**
+ * El cierre repite la única acción de la página y muestra el producto una vez
+ * más, asomando desde abajo: lo último que se ve es la app, no un número suelto.
+ */
 export function CierreSection() {
   return (
     <section aria-labelledby="titulo-cierre" className="bg-surface px-4 pb-24 sm:px-6 md:pb-32">
-      <div className="panel-granate relative mx-auto max-w-6xl overflow-hidden rounded-[2rem] px-7 py-16 text-surface sm:px-14 md:py-20">
+      <div className="panel-granate relative mx-auto max-w-6xl overflow-hidden rounded-[2rem] px-7 pt-16 text-surface sm:px-14 md:pt-20">
         <div className="hero-grilla pointer-events-none absolute inset-0" aria-hidden="true" />
-        <div className="relative grid gap-12 md:grid-cols-12 md:items-center">
-          <div className="md:col-span-7">
+        <div className="relative grid gap-12 md:grid-cols-12">
+          <div className="pb-16 md:col-span-7 md:pb-20">
             <h2 id="titulo-cierre" className="text-4xl font-medium leading-tight tracking-[-0.03em] sm:text-5xl">
               ¿Cuándo fue la última vez que remarcaste con números?
             </h2>
@@ -21,18 +22,11 @@ export function CierreSection() {
             </p>
             <div className="mt-9">
               <BotonWhatsApp sobreOscuro />
+              <p className="mt-4 text-sm text-surface/60">Te responde una persona del equipo, sin compromiso.</p>
             </div>
           </div>
           <div className="relative hidden md:col-span-5 md:block" aria-hidden="true">
-            <div className="tarjeta-flotante ml-auto w-72 rotate-3 rounded-2xl bg-surface p-5 text-ink">
-              <div className="flex items-center gap-3">
-                <Icono nombre="etiqueta" className="size-9" />
-                <span className="text-sm text-ink-soft">Estantería metálica</span>
-              </div>
-              <p className="mt-4 text-sm text-ink-soft line-through decoration-action/60">{enPesos(antes.precioDeVenta)}</p>
-              <p className="font-mono text-4xl font-semibold tabular-nums text-granate-deep">{enPesos(despues.precioSugerido)}</p>
-              <p className="mt-3 text-xs text-ink-soft">Precio sugerido tras una suba del 10 % del dólar. Ejemplo.</p>
-            </div>
+            <Telefono src={tableroCelular} alt="" className="absolute -bottom-40 left-1/2 w-60 -translate-x-1/2 rotate-[4deg]" />
           </div>
         </div>
       </div>

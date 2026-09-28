@@ -6,8 +6,8 @@ import { PanelRemarcadora } from './PanelRemarcadora';
 
 /**
  * Qué hace, en una grilla de paneles con su propia pantalla. Cada panel
- * corresponde a algo que existe hoy en la app: alertas por email, carga desde
- * el celular (panel de campo), trazabilidad y punto de equilibrio.
+ * corresponde a algo que existe hoy en la app: alertas por email, comprobantes
+ * desde el portal del equipo, trazabilidad y punto de equilibrio.
  */
 export function FuncionesSection() {
   return (
@@ -29,14 +29,20 @@ export function FuncionesSection() {
             <AlertaDeMargen />
           </Panel>
 
-          <Panel icono="celular" titulo="Tu equipo carga desde el celular" texto="Consumos, horas y comprobantes con una foto, sin mandarte papelitos.">
+          <Panel
+            icono="celular"
+            titulo="Tu equipo manda los comprobantes"
+            texto="Una foto de la factura o el remito desde el celular. Vos lo aprobás antes de que entre al costo."
+          >
             <div className="rounded-2xl bg-surface p-4">
-              <p className="text-sm font-semibold text-granate-deep">¿Qué querés cargar?</p>
-              <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
-                <span className="rounded-xl bg-surface-alt px-3 py-2.5">Consumo de material</span>
-                <span className="rounded-xl bg-surface-alt px-3 py-2.5">Horas trabajadas</span>
-                <span className="col-span-2 flex items-center gap-2 rounded-xl bg-granate px-3 py-2.5 text-surface">
-                  <Camera className="size-4" aria-hidden="true" /> Foto de un comprobante
+              <ul className="space-y-2.5">
+                <Comprobante nombre="Factura de chapa" elemento="Materia prima" estado="Pendiente" />
+                <Comprobante nombre="Remito de tornillería" elemento="Materia prima" estado="Aprobado" />
+              </ul>
+              <div className="mt-3 flex items-center gap-2 rounded-full border border-line bg-surface-alt py-1.5 pl-4 pr-1.5 text-xs text-ink-soft">
+                <span className="flex-1">Escribí una nota o adjuntá…</span>
+                <span className="flex size-7 items-center justify-center rounded-full bg-granate text-surface">
+                  <Camera className="size-3.5" aria-hidden="true" />
                 </span>
               </div>
             </div>
@@ -138,5 +144,28 @@ function AlertaDeMargen() {
         También te llegó por email
       </p>
     </div>
+  );
+}
+
+/** Un envío del portal del equipo, como lo lista la app: qué es, a qué elemento va y en qué estado está. */
+function Comprobante({ nombre, elemento, estado }: { nombre: string; elemento: string; estado: 'Pendiente' | 'Aprobado' }) {
+  return (
+    <li className="flex items-center gap-3">
+      <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-granate-tenue">
+        <Camera className="size-4 text-granate" aria-hidden="true" />
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className="block truncate text-xs font-semibold text-ink">{nombre}</span>
+        <span className="block text-[11px] text-ink-soft">{elemento}</span>
+      </span>
+      <span
+        className={cn(
+          'rounded-full px-2 py-0.5 text-[11px] font-semibold',
+          estado === 'Aprobado' ? 'bg-surface-alt text-ok' : 'bg-granate-tenue text-warn',
+        )}
+      >
+        {estado}
+      </span>
+    </li>
   );
 }

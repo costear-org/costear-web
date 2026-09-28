@@ -13,9 +13,9 @@ const RESULTADOS = [
 ];
 
 const SEGURIDAD = [
-  'Cada negocio separado de los demás en la base de datos',
-  'Contraseñas cifradas y verificación en dos pasos',
-  'Cada cambio registrado con quién y cuándo',
+  'Cada cuenta separada de las demás en la propia base de datos',
+  'Contraseñas protegidas y verificación en dos pasos',
+  'Las acciones importantes quedan registradas con quién y cuándo',
 ];
 
 export function MetodoSection() {

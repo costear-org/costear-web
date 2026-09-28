@@ -14,7 +14,7 @@ const PREGUNTAS = [
   {
     pregunta: '¿Tengo que dejar mi Excel?',
     respuesta:
-      'No de un día para el otro. Partimos de la planilla que ya usás, y todo lo que calcula CosteAR se puede descargar en Excel cuando quieras.',
+      'No de un día para el otro. Partimos de la planilla que ya usás, y los cálculos de CosteAR se descargan en Excel cuando quieras.',
   },
   {
     pregunta: '¿Sirve para mi rubro?',
@@ -29,7 +29,7 @@ const PREGUNTAS = [
   {
     pregunta: '¿Quién ve mis números?',
     respuesta:
-      'Solo tu cuenta. Cada negocio está separado de los demás en la base de datos, las contraseñas se guardan cifradas y cada cambio queda registrado.',
+      'Solo vos y las personas que invites. Cada cuenta está separada de las demás en la propia base de datos, podés entrar con verificación en dos pasos y las acciones importantes quedan registradas con quién y cuándo.',
   },
 ];
 

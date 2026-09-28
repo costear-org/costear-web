@@ -20,21 +20,21 @@ export function HeroSection() {
       </div>
       <div className="hero-halo pointer-events-none absolute left-1/2 top-[-12rem] h-[40rem] w-[70rem] -translate-x-1/2" aria-hidden="true" />
 
-      <div className="relative mx-auto max-w-7xl px-4 pt-32 text-center sm:px-6 md:pt-40">
+      <div className="relative mx-auto max-w-7xl px-4 pt-28 text-center sm:px-6 md:pt-32">
         <p className="mx-auto inline-flex items-center gap-2 rounded-full border border-line bg-surface/80 px-4 py-1.5 text-sm text-ink-soft backdrop-blur-md">
           <span className="size-1.5 rounded-full bg-action" aria-hidden="true" />
           Costos y precios para negocios que fabrican
         </p>
-        <h1 className="mx-auto mt-7 max-w-4xl text-5xl font-medium leading-[1.02] tracking-[-0.04em] text-granate-deep sm:text-6xl lg:text-[5.5rem]">
+        <h1 className="mx-auto mt-7 max-w-4xl text-5xl font-medium leading-[1.02] tracking-[-0.04em] text-granate-deep sm:text-6xl lg:text-[4.75rem]">
           Remarcá con números,{' '}
           <br className="hidden sm:block" />
           no a ojo.
         </h1>
-        <p className="mx-auto mt-7 max-w-xl text-lg leading-relaxed text-ink-soft">
+        <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-ink-soft">
           CosteAR calcula lo que te cuesta cada producto y te dice a cuánto venderlo cuando se mueven el
           dólar y la inflación.
         </p>
-        <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
+        <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <BotonWhatsApp />
           <a
             href="#funciones"
@@ -45,7 +45,9 @@ export function HeroSection() {
           </a>
         </div>
 
-        <div className="relative mx-auto mt-20 max-w-5xl">
+        <p className="mt-4 text-sm text-ink-soft">Te responde una persona del equipo, sin compromiso.</p>
+
+        <div className="relative mx-auto mt-14 max-w-5xl">
           <VentanaNavegador
             src={tableroEscritorio}
             alt="El tablero de CosteAR en la computadora: dólar, inflación, costo por unidad, contribución y punto de equilibrio"

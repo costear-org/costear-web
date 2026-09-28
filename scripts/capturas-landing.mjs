@@ -56,7 +56,7 @@ async function rutear(page) { await page.route('**/api/v1/**', (route) => {
   return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ data: [] }) });
 }); }
 const tomas = [
-  { ruta: '/dashboard', nombre: 'tablero-escritorio', viewport: { width: 1440, height: 760 } },
+  { ruta: '/dashboard', nombre: 'tablero-escritorio', viewport: { width: 1280, height: 720 } },
   { ruta: '/dashboard', nombre: 'tablero-celular', viewport: { width: 390, height: 844 }, isMobile: true },
 ];
 for (const t of tomas) {
