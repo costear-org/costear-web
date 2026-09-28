@@ -14,12 +14,12 @@ const PREGUNTAS = [
   {
     pregunta: '¿Tengo que dejar mi Excel?',
     respuesta:
-      'No de un día para el otro. Partimos de la planilla que ya usás, y los cálculos de CosteAR se descargan en Excel cuando quieras.',
+      'No de un día para el otro. Partimos de la planilla que ya usás, y los cálculos de Costear se descargan en Excel cuando quieras.',
   },
   {
     pregunta: '¿Sirve para mi rubro?',
     respuesta:
-      'CosteAR se adapta por rubro: las palabras, los datos que se cargan y los avisos cambian según lo que fabricás. Si al tuyo le falta algo, lo hablamos y lo adaptamos.',
+      'Costear se adapta por rubro: las palabras, los datos que se cargan y los avisos cambian según lo que fabricás. Si al tuyo le falta algo, lo hablamos y lo adaptamos.',
   },
   {
     pregunta: '¿Tengo que saber de costos?',

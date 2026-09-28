@@ -3,6 +3,7 @@ import { InteractiveDotGrid } from '@/components/layout/InteractiveDotGrid';
 import tableroEscritorio from '@/assets/landing/tablero-escritorio.jpg';
 import tableroCelular from '@/assets/landing/tablero-celular.jpg';
 import { BotonWhatsApp } from './BotonWhatsApp';
+import { irASeccion } from '../ir-a-seccion';
 import { cn } from '@/lib/utils';
 import { Icono, type NombreIcono } from './Icono';
 import { TarjetaFlotante, Telefono, VentanaNavegador } from './mockups/Dispositivos';
@@ -31,13 +32,14 @@ export function HeroSection() {
           no a ojo.
         </h1>
         <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-ink-soft">
-          CosteAR calcula lo que te cuesta cada producto y te dice a cuánto venderlo cuando se mueven el
+          Costear calcula lo que te cuesta cada producto y te dice a cuánto venderlo cuando se mueven el
           dólar y la inflación.
         </p>
         <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <BotonWhatsApp />
           <a
             href="#funciones"
+            onClick={(e) => irASeccion(e, '#funciones')}
             className="inline-flex items-center gap-2 rounded-full border border-line bg-surface/80 px-6 py-4 text-base font-medium text-ink backdrop-blur-md transition-colors hover:border-granate/40"
           >
             Ver qué hace
@@ -50,12 +52,12 @@ export function HeroSection() {
         <div className="relative mx-auto mt-14 max-w-5xl">
           <VentanaNavegador
             src={tableroEscritorio}
-            alt="El tablero de CosteAR en la computadora: dólar, inflación, costo por unidad, contribución y punto de equilibrio"
+            alt="El tablero de Costear en la computadora: dólar, inflación, costo por unidad, contribución y punto de equilibrio"
             className="relative z-0 hidden w-full sm:block"
           />
           <Telefono
             src={tableroCelular}
-            alt="El tablero de CosteAR en el celular"
+            alt="El tablero de Costear en el celular"
             className="relative z-10 mx-auto w-64 sm:absolute sm:-bottom-12 sm:-right-4 sm:w-48 lg:w-52 xl:-right-24"
           />
 
@@ -79,7 +81,7 @@ export function HeroSection() {
             className="-right-48 top-[8%]"
           />
         </div>
-        <p className="relative pb-16 pt-6 text-xs text-ink-soft sm:pt-20">Capturas de CosteAR con datos de ejemplo.</p>
+        <p className="relative pb-16 pt-6 text-xs text-ink-soft sm:pt-20">Capturas de Costear con datos de ejemplo.</p>
       </div>
     </section>
   );

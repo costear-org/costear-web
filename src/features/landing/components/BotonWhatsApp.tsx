@@ -1,6 +1,6 @@
-import { MessageCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { WHATSAPP_URL } from '../contacto';
+import { LogoWhatsApp } from './LogoWhatsApp';
 
 /**
  * La acción principal de la landing, igual en todos lados: mismo texto,
@@ -13,20 +13,13 @@ export function BotonWhatsApp({ sobreOscuro = false, className }: { sobreOscuro?
       target="_blank"
       rel="noreferrer"
       className={cn(
-        'group inline-flex items-center gap-3 rounded-full py-2 pl-6 pr-2 text-base font-semibold transition-colors',
+        'inline-flex items-center gap-2.5 rounded-full px-7 py-4 text-base font-semibold transition-colors',
         sobreOscuro ? 'bg-surface text-granate-deep hover:bg-granate-tenue' : 'bg-granate text-surface hover:bg-granate-deep',
         className,
       )}
     >
+      <LogoWhatsApp className="size-5" />
       Hablemos por WhatsApp
-      <span
-        className={cn(
-          'flex size-10 items-center justify-center rounded-full transition-transform group-hover:rotate-[-8deg]',
-          sobreOscuro ? 'bg-action text-surface' : 'bg-surface text-granate',
-        )}
-      >
-        <MessageCircle className="size-5" aria-hidden="true" />
-      </span>
     </a>
   );
 }

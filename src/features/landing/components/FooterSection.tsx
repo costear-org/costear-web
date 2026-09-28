@@ -9,7 +9,7 @@ export function FooterSection({ onAccessClick }: { onAccessClick: () => void }) 
           <span className="size-7">
             <CosteARLogo className="size-full text-granate" animate={false} />
           </span>
-          <span className="font-semibold text-granate-deep">CosteAR</span>
+          <span className="font-semibold text-granate-deep">Costear</span>
           <span className="text-sm text-ink-soft">Hecho en Tucumán, Argentina</span>
         </div>
         <nav aria-label="Contacto" className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-ink-soft">
