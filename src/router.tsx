@@ -35,6 +35,7 @@ import { CargadoresPage } from '@/features/companies/CargadoresPage';
 import { authDestination } from '@/features/auth/auth-destination';
 import { WorkOrdersPage } from '@/features/work-orders/WorkOrdersPage';
 import { WorkOrderDetailPage } from '@/features/work-orders/WorkOrderDetailPage';
+import { InventoryPage } from '@/features/inventory/InventoryPage';
 
 
 const rootRoute = createRootRoute({
@@ -128,6 +129,17 @@ const companyDetailRoute = createRoute({ getParentRoute: () => rootRoute, path: 
 const companySetupRoute = createRoute({ getParentRoute: () => rootRoute, path: '/companies/$id/setup', beforeLoad: requireAuth, component: CompanyTargetSetup });
 const workOrdersRoute = createRoute({ getParentRoute: () => rootRoute, path: '/companies/$companyId/ordenes-trabajo', beforeLoad: requireAuth, component: WorkOrdersPage });
 const workOrderDetailRoute = createRoute({ getParentRoute: () => rootRoute, path: '/companies/$companyId/ordenes-trabajo/$orderId', beforeLoad: requireAuth, component: WorkOrderDetailPage });
+const inventoryRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/inventario',
+  beforeLoad: requireAuth,
+  validateSearch: (search: Record<string, unknown>): { companyId?: string } => ({
+    companyId: typeof search.companyId === 'string' && search.companyId.length > 0
+      ? search.companyId
+      : undefined,
+  }),
+  component: InventoryPage,
+});
 const costStructureRoute = createRoute({ getParentRoute: () => rootRoute, path: '/cost-structures/$id', beforeLoad: requireAuth, component: CostStructurePage });
 const alertsRoute = createRoute({ getParentRoute: () => rootRoute, path: '/alerts', beforeLoad: requireAuth, component: AlertsPage });
 const macroRoute = createRoute({ getParentRoute: () => rootRoute, path: '/macro', beforeLoad: requireAuth, component: MacroPage });
@@ -214,6 +226,7 @@ const routeTree = rootRoute.addChildren([
   companySetupRoute,
   workOrdersRoute,
   workOrderDetailRoute,
+  inventoryRoute,
   costStructureRoute,
   alertsRoute,
   macroRoute,

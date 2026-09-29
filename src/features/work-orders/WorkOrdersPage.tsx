@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from 'react';
 import { Link, useNavigate, useParams } from '@tanstack/react-router';
 import { isAxiosError } from 'axios';
-import { ArrowLeft, ClipboardList, Plus } from 'lucide-react';
+import { ArrowLeft, ClipboardList, Plus, Warehouse } from 'lucide-react';
 import { AppShell } from '@/components/layout/AppShell';
 import { Button } from '@/components/ui/Button';
 import { apiErrorMessage } from '@/lib/api';
@@ -20,6 +20,7 @@ export function WorkOrdersPage() {
   const lexicon = packageInfo.data?.lexicon;
   const orderName = lexicon?.OrdenTrabajo;
   const templateName = lexicon?.PlantillaOrden;
+  const depositName = lexicon?.Deposito;
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -54,7 +55,10 @@ export function WorkOrdersPage() {
       <Link to="/companies/$id" params={{ id: companyId }} className="mb-5 inline-flex items-center gap-2 text-sm font-semibold text-granate"><ArrowLeft className="size-4" /> Volver al negocio</Link>
       <header className="mb-7 flex flex-wrap items-end justify-between gap-4">
         <div><p className="text-xs font-bold uppercase tracking-wider text-action">Operación</p><h1 className="text-3xl font-extrabold text-granate-deep">{orderName}s</h1></div>
-        <Button onClick={() => setOpen((value) => !value)}><Plus className="size-4" /> Nueva {orderName}</Button>
+        <div className="flex flex-wrap gap-2">
+          {depositName && <Link to="/inventario" search={{ companyId }} className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-granate bg-white px-5 text-sm font-bold text-granate shadow-sm hover:bg-granate-tenue"><Warehouse className="size-4" /> {depositName}</Link>}
+          <Button onClick={() => setOpen((value) => !value)}><Plus className="size-4" /> Nueva {orderName}</Button>
+        </div>
       </header>
 
       {open && (
