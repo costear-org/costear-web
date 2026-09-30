@@ -1,17 +1,18 @@
 import { useState } from 'react';
 import { Link, useParams } from '@tanstack/react-router';
-import { ArrowLeft, FileText, ListChecks, PackageCheck } from 'lucide-react';
+import { ArrowLeft, ChartColumn, FileText, ListChecks, PackageCheck } from 'lucide-react';
 import { AppShell } from '@/components/layout/AppShell';
 import { Button } from '@/components/ui/Button';
 import { apiErrorMessage } from '@/lib/api';
 import { usePackageLexicon, useTransitionWorkOrder, useWorkOrder, useWorkOrderStages, type WorkOrderState } from './work-order-hooks';
 import { nextWorkOrderState } from './work-order-domain';
 import { PresupuestosPanel } from './PresupuestosPanel';
+import { ResultadoPanel } from './ResultadoPanel';
 
 const LABELS: Record<WorkOrderState, string> = { BORRADOR: 'Borrador', COTIZADA: 'Cotizada', APROBADA: 'Aprobada', EN_PRODUCCION: 'En producción', TERMINADA_TECNICA: 'Terminada técnicamente', PENDIENTE_CIERRE: 'Pendiente de cierre', CERRADA: 'Cerrada', CANCELADA: 'Cancelada' };
 
 export function WorkOrderDetailPage() {
-  const [activeTab, setActiveTab] = useState<'stages' | 'budget'>('stages');
+  const [activeTab, setActiveTab] = useState<'stages' | 'budget' | 'result'>('stages');
   const { companyId, orderId } = useParams({ from: '/companies/$companyId/ordenes-trabajo/$orderId' });
   const order = useWorkOrder(orderId);
   const stages = useWorkOrderStages(orderId);
@@ -37,8 +38,9 @@ export function WorkOrderDetailPage() {
       <div role="tablist" aria-label={`Detalle de ${orderName.toLocaleLowerCase('es')}`} className="mb-5 flex gap-2 border-b border-line">
         <button role="tab" aria-selected={activeTab === 'stages'} onClick={() => setActiveTab('stages')} className={`inline-flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-bold ${activeTab === 'stages' ? 'border-granate text-granate' : 'border-transparent text-ink-soft'}`}><ListChecks className="size-4" /> {stageName}s</button>
         <button role="tab" aria-selected={activeTab === 'budget'} onClick={() => setActiveTab('budget')} className={`inline-flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-bold ${activeTab === 'budget' ? 'border-granate text-granate' : 'border-transparent text-ink-soft'}`}><FileText className="size-4" /> Presupuesto</button>
+        <button role="tab" aria-selected={activeTab === 'result'} onClick={() => setActiveTab('result')} className={`inline-flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-bold ${activeTab === 'result' ? 'border-granate text-granate' : 'border-transparent text-ink-soft'}`}><ChartColumn className="size-4" /> Resultado</button>
       </div>
-      {activeTab === 'stages' ? <section><h2 className="mb-4 text-xl font-bold text-granate-deep">{stageName}s</h2><ol className="grid gap-3">{stages.data?.map((stage) => <li key={stage.id} className="flex items-center gap-4 rounded-2xl border border-line bg-white p-4"><span className="flex size-9 items-center justify-center rounded-full bg-granate text-sm font-bold text-white">{stage.orden}</span><span className="font-semibold text-ink">{stage.nombre}</span>{stage.esEntrega && <span className="ml-auto inline-flex items-center gap-1 rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700"><PackageCheck className="size-4" /> Entrega</span>}</li>)}</ol></section> : <PresupuestosPanel orderId={orderId} stages={stages.data ?? []} additionalName={additionalName} />}
+      {activeTab === 'stages' ? <section><h2 className="mb-4 text-xl font-bold text-granate-deep">{stageName}s</h2><ol className="grid gap-3">{stages.data?.map((stage) => <li key={stage.id} className="flex items-center gap-4 rounded-2xl border border-line bg-white p-4"><span className="flex size-9 items-center justify-center rounded-full bg-granate text-sm font-bold text-white">{stage.orden}</span><span className="font-semibold text-ink">{stage.nombre}</span>{stage.esEntrega && <span className="ml-auto inline-flex items-center gap-1 rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700"><PackageCheck className="size-4" /> Entrega</span>}</li>)}</ol></section> : activeTab === 'budget' ? <PresupuestosPanel orderId={orderId} stages={stages.data ?? []} additionalName={additionalName} /> : <ResultadoPanel orderId={orderId} companyId={companyId} orderName={orderName} orderState={order.data!.estado} />}
     </AppShell>
   );
 }

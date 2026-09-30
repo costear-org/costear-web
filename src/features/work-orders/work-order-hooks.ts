@@ -17,6 +17,50 @@ export type WorkOrderBudget = {
 };
 export type WorkOrderBudgets = { presupuestos: WorkOrderBudget[]; precioContractual?: number; costoPrevistoTotal: number };
 export type BudgetAction = 'preparar' | 'aprobar' | 'rechazar' | 'revalidar';
+export type DeviationSense = 'FAVORABLE' | 'DESFAVORABLE' | 'NEUTRA';
+export type DeviationElement = 'MP' | 'MOD' | 'CIF' | 'ENTREGA';
+export type WorkOrderDeviationReport = {
+  ordenId: string;
+  costoPresupuestado: number;
+  costoReal: number;
+  precioContractual?: number;
+  margenEsperado?: number;
+  margenReal?: number;
+  desvioTotal: number;
+  sentido: DeviationSense;
+  elementos: Array<{
+    elemento: DeviationElement;
+    presupuestado: number;
+    real: number;
+    desvio: number;
+    sentido: DeviationSense;
+    comprometido: number;
+    proyeccionAlTerminar: number;
+  }>;
+  puente: Array<{
+    causa: 'PRECIO' | 'CANTIDAD' | 'EFICIENCIA' | 'ALCANCE' | 'ASIGNACION';
+    elemento: DeviationElement;
+    importe: number;
+    sentido: DeviationSense;
+  }>;
+  proyeccionAlTerminar: {
+    incurrido: number;
+    comprometido: number;
+    total: number;
+    presupuesto: number;
+  };
+};
+export type WorkOrderClosurePhoto = {
+  id: string;
+  ordenId: string;
+  version: number;
+  congelado: unknown;
+  versionMotor: string;
+  cerradoPor: string;
+  motivoReapertura: string | null;
+  anteriorId: string | null;
+  createdAt: string;
+};
 
 export function usePackageLexicon(companyId: string) {
   return useQuery({
@@ -72,6 +116,47 @@ export function useWorkOrderBudgets(id: string, enabled = true) {
     queryKey: ['work-orders', id, 'budgets'],
     queryFn: async () => (await api.get<{ data: WorkOrderBudgets }>(`/ordenes-trabajo/${id}/presupuestos`)).data.data,
     enabled: Boolean(id) && enabled,
+  });
+}
+
+export function useWorkOrderDeviationReport(id: string, enabled = true) {
+  return useQuery({
+    queryKey: ['work-orders', id, 'deviation-report'],
+    queryFn: async () => (await api.get<{ data: WorkOrderDeviationReport }>(`/ordenes-trabajo/${id}/informe-desvio`)).data.data,
+    enabled: Boolean(id) && enabled,
+    retry: false,
+  });
+}
+
+export function useWorkOrderClosurePhotos(id: string, enabled = true) {
+  return useQuery({
+    queryKey: ['work-orders', id, 'closure-photos'],
+    queryFn: async () => (await api.get<{ data: WorkOrderClosurePhoto[] }>(`/ordenes-trabajo/${id}/fotos-cierre`)).data.data,
+    enabled: Boolean(id) && enabled,
+  });
+}
+
+export function useCloseWorkOrder(id: string, companyId: string) {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: async () => (await api.post<{ data: WorkOrderClosurePhoto }>(`/ordenes-trabajo/${id}/cierre`, {})).data.data,
+    onSuccess: (photo) => {
+      client.setQueryData<WorkOrder | undefined>(['work-orders', id], (order) => order ? { ...order, estado: 'CERRADA', etiquetaEstado: 'Cerrada' } : order);
+      client.setQueryData<WorkOrderClosurePhoto[]>(['work-orders', id, 'closure-photos'], (photos) => photos ? [...photos, photo] : [photo]);
+      client.invalidateQueries({ queryKey: ['companies', companyId, 'work-orders'] });
+    },
+  });
+}
+
+export function useReopenWorkOrder(id: string, companyId: string) {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: async (motivo: string) => (await api.post<{ data: WorkOrder }>(`/ordenes-trabajo/${id}/reapertura`, { motivo })).data.data,
+    onSuccess: (order) => {
+      client.setQueryData(['work-orders', id], order);
+      client.invalidateQueries({ queryKey: ['work-orders', id, 'closure-photos'] });
+      client.invalidateQueries({ queryKey: ['companies', companyId, 'work-orders'] });
+    },
   });
 }
 
