@@ -23,7 +23,7 @@
 
 - ⚠️ **El flujo cambió**: el PR nace en draft y se mergea con squash. Las promociones
   (`dev→staging→main`) van con **merge commit**, no squash.
-  Manual: https://github.com/Coste-AR/CosteAR-backend/blob/dev/docs/manual-de-flujo-de-trabajo.md
+  Manual: https://github.com/costear-org/costear-backend/blob/dev/docs/manual-de-flujo-de-trabajo.md
 - 📌 **Hay tres pantallas pendientes de datos que el backend ya calcula y nadie muestra**: costo
   unitario de lo terminado (#57), desperdicio del período (#58) y trabajos de terceros (#59).
   Son el patrón que la auditoría marcó: piezas construidas y nunca enchufadas.

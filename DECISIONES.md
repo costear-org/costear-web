@@ -718,7 +718,7 @@ typecheck/build/suite. Pasos de prueba manual para cada ítem, en el resumen al 
 ## U01-U10 — La interfaz de Costeo por Procesos
 
 Referencia visual: el mockup aprobado `CosteAR-Mockups-v2-Trazabilidad.html` (repo
-`costear-knowledge-base`, `costeo-procesos/mockups/`). Sus tokens coinciden 1:1 con `index.css`
+`costear-vault`, `costeo-procesos/mockups/`). Sus tokens coinciden 1:1 con `index.css`
 —granate `#4a151b`, acción `#b31929`, Outfit + JetBrains Mono, radio 24px—, así que no hubo que
 inventar estilos ni aproximar colores.
 
