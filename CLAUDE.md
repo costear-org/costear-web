@@ -26,7 +26,7 @@
 alternativas descartadas → recién ahí implementar, y verificar donde el trabajo va a vivir, no
 donde uno está parado. Se movió el 22-08-2026 para no cargarla en cada sesión sin importar la
 tarea. La versión completa —con el caso que la probó y el detalle de cada trampa— vive en
-[`CosteAR-admin/docs/2026-08-22-filosofia-diagnosticar-planificar-implementar.md`](https://github.com/Coste-AR/CosteAR-admin/blob/dev/docs/2026-08-22-filosofia-diagnosticar-planificar-implementar.md)
+[`costear-admin/docs/2026-08-22-filosofia-diagnosticar-planificar-implementar.md`](https://github.com/costear-org/costear-admin/blob/dev/docs/2026-08-22-filosofia-diagnosticar-planificar-implementar.md)
 (fuente canónica: el Second Brain de Santiago, fuera de los repos de código).
 
 ---
@@ -40,10 +40,10 @@ decisión de negocio equivocada del cliente, no un detalle visual.
 
 | Repo | Qué es | Visibilidad |
 |---|---|---|
-| `Coste-AR/CosteAR-backend` | API | pública |
-| `Coste-AR/CosteAR-frontend` | Este repo | pública |
-| `Coste-AR/CosteAR-admin` | Panel interno + **bitácora del desarrollo** | privada |
-| `Coste-AR/costear-knowledge-base` | Bóveda que alimenta el RAG | privada |
+| `costear-org/costear-backend` | API | pública |
+| `costear-org/costear-web` | Este repo | pública |
+| `costear-org/costear-admin` | Panel interno + **bitácora del desarrollo** | privada |
+| `costear-org/costear-vault` | Bóveda que alimenta el RAG | privada |
 
 ---
 
@@ -110,7 +110,7 @@ Se abren con `/costear-pr`.
 |**PR-02**|Antes de pedir review: tests, lint y typecheck en verde localmente.|
 |**PR-03**|Si no lo describís en 3 bullets, es más de un PR.|
 |**PR-04**|**Todo PR nace en DRAFT.** GitHub **impide mergear un borrador**: mientras el trabajo crece, nadie lo mergea por error. Se marca `gh pr ready` cuando está listo de verdad — y se dice **«terminé de pushear»**. Entre el 20 y el 22-08 se perdieron 4 PRs de trabajo por mergear PRs que todavía estaban creciendo; en un caso, 12 minutos antes del commit que faltaba.|
-|**PR-05**|**Nadie mergea a mano, y el agente no mergea nunca — tampoco con `gh pr merge --auto`.** Desde el 30-08-2026 un PR entra solo cuando pasan dos cosas: todos sus checks en verde (cero checks no cuenta como verde) **y** alguien le puso la etiqueta `auto-merge`. La etiqueta la pone Santiago y es el juicio humano que **reemplaza al review**. Mergea `.github/workflows/auto-merge.yml`: squash contra `dev`, merge commit contra `staging`, y `main` a mano. El agente llega hasta `gh pr ready` y avisa. Canónico: `CosteAR-os/ORQUESTACION.md`.|
+|**PR-05**|**Nadie mergea a mano, y el agente no mergea nunca — tampoco con `gh pr merge --auto`.** Desde el 30-08-2026 un PR entra solo cuando pasan dos cosas: todos sus checks en verde (cero checks no cuenta como verde) **y** alguien le puso la etiqueta `auto-merge`. La etiqueta la pone Santiago y es el juicio humano que **reemplaza al review**. Mergea `.github/workflows/auto-merge.yml`: squash contra `dev`, merge commit contra `staging`, y `main` a mano. El agente llega hasta `gh pr ready` y avisa. Canónico: `costear-os/ORQUESTACION.md`.|
 |**PR-06**|**Después de mergear, verificar que el trabajo LLEGÓ** (`git log origin/dev`), no que el PR figura en verde. Un PR apilado mergeado contra su rama de abajo aparece como `MERGED` y el trabajo no llega. Pasó 3 veces entre el 20 y el 21-08.|
 
 ---
@@ -159,8 +159,8 @@ lo reemplaza esa suite.*
 
 Los tres niveles completos —por tarea, por tanda de trabajo (cada promoción a `staging`) y por
 entrega al cliente— viven en
-[`DEFINITION-OF-DONE.md`](https://github.com/Coste-AR/CosteAR-admin/blob/dev/DEFINITION-OF-DONE.md)
-(`CosteAR-admin`, privado). Es la **fuente única**: no se duplica acá, se referencia.
+[`DEFINITION-OF-DONE.md`](https://github.com/costear-org/costear-admin/blob/dev/DEFINITION-OF-DONE.md)
+(`costear-admin`, privado). Es la **fuente única**: no se duplica acá, se referencia.
 
 ---
 
@@ -219,7 +219,7 @@ que el frontend no recalcula los números que ya vienen del backend. **Viven en
 
 ### Sobre el conocimiento
 
-**El conocimiento no se va con quien lo escribió: se queda escrito.** Los ADR, la bitácora de `CosteAR-admin`, los tests con nombres en castellano y las reglas de este archivo existen exactamente para eso: para que no dependan de una persona ni de su memoria.
+**El conocimiento no se va con quien lo escribió: se queda escrito.** Los ADR, la bitácora de `costear-admin`, los tests con nombres en castellano y las reglas de este archivo existen exactamente para eso: para que no dependan de una persona ni de su memoria.
 
 Pero escribirlo no alcanza.
 
@@ -232,7 +232,7 @@ Por eso `/costear-bitacora` al cerrar una sesión (DOC-03) y el ADR en el mismo 
 |Fecha|Qué cambió|Fuente|
 |---|---|---|
 |2026-08-31|**Dos cosas que el archivo decía y ya no eran ciertas.** La DoD del 4.bis seguía pidiendo abrir el navegador a mano: lo reemplazó Playwright el 30-08, y `GR-08` va con ella. Se suma `GR-09` sobre verificar con herramientas propias, que salió de reportar tres veces como arreglado un workflow que nunca corrió. *La tercera —`PR-05`— la reescribió #81 mientras este PR esperaba; quedó esa redacción.*|Santiago|
-|2026-08-22|**0.bis sale de acá.** La filosofía (diagnosticar/planificar/implementar) cargaba en TODAS las sesiones sin importar la tarea. El resumen operativo queda inline; la versión completa vive en `CosteAR-admin/docs/2026-08-22-filosofia-diagnosticar-planificar-implementar.md` (espejo del Second Brain de Santiago, que es la fuente canónica). Se evaluó y descartó ponerla en `costear-knowledge-base`: ese repo alimenta el RAG del clasificador y mete cualquier `.md` al índice — se habría mezclado con la doctrina de costeo.|Santiago|
+|2026-08-22|**0.bis sale de acá.** La filosofía (diagnosticar/planificar/implementar) cargaba en TODAS las sesiones sin importar la tarea. El resumen operativo queda inline; la versión completa vive en `costear-admin/docs/2026-08-22-filosofia-diagnosticar-planificar-implementar.md` (espejo del Second Brain de Santiago, que es la fuente canónica). Se evaluó y descartó ponerla en `costear-vault`: ese repo alimenta el RAG del clasificador y mete cualquier `.md` al índice — se habría mezclado con la doctrina de costeo.|Santiago|
 |2026-08-22|**Pieza 1 — FE-01..07 se mudan a `.claude/rules/frontend-ui.md`**, scoped a `src/**`. Antes cargaban en todas las sesiones; ahora solo cuando el trabajo toca código de la app.|Santiago|
 |2026-08-22|**PR-04/05/06**: el PR nace en draft, se mergea con `--auto`, y después se verifica que el trabajo llegó. Reemplazan por mecanismo lo que REV-08 pedía recordar. La skill `/costear-pr` ya crea los PRs en borrador.|Santiago|
 |2026-08-22|**Sección 0.bis — la filosofía: diagnosticar, planificar, recién ahí implementar.** Se escribió después de que aplicarla encontrara, en una tarde, la causa de tres días de re-trabajo: cuatro casillas de configuración apagadas, no falta de disciplina. Incluye las tres trampas que el orden evita.|Santiago|
@@ -243,12 +243,12 @@ Por eso `/costear-bitacora` al cerrar una sesión (DOC-03) y el ADR en el mismo 
 
 ## 5.bis Datos de clientes en repositorios públicos
 
-`CosteAR-backend` y `CosteAR-frontend` son **públicos**. `CosteAR-admin` es privado.
+`costear-backend` y `costear-web` son **públicos**. `costear-admin` es privado.
 
 |ID|Regla|
 |---|---|
 |**CLI-01**|**Los datos de un cliente no entran a un repositorio público.** Ni su nombre, ni su localidad, ni sus números reales — no en tests, no en seeds, no en comentarios, no en ejemplos, no en cuerpos de PR ni en mensajes de commit.|
-|**CLI-02**|Un fixture que necesita números realistas usa **datos ficticios** que ejerciten la misma matemática. El caso real, si hace falta conservarlo, va a `CosteAR-admin` (privado).|
+|**CLI-02**|Un fixture que necesita números realistas usa **datos ficticios** que ejerciten la misma matemática. El caso real, si hace falta conservarlo, va a `costear-admin` (privado).|
 |**CLI-03**|Antes de abrir un PR que toque un vertical de un cliente: `git grep -in "<nombre del cliente>"`. Si devuelve algo, no se abre.|
 |**CLI-04**|Esto incluye la estructura económica: costo unitario, punto de equilibrio, precio de venta, márgenes y escala. **Que un competidor pueda leer el margen de un productor es un problema para él, no para nosotros.**|
 

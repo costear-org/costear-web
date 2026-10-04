@@ -313,7 +313,7 @@ agregar();
 agregar(
   'Recordá: el PR nace en draft (`gh pr create --draft`) y se mergea con squash; ' +
     'las promociones van con merge commit. Manual completo: ' +
-    'https://github.com/Coste-AR/CosteAR-backend/blob/dev/docs/manual-de-flujo-de-trabajo.md',
+    'https://github.com/costear-org/costear-backend/blob/dev/docs/manual-de-flujo-de-trabajo.md',
 );
 // #39 — el DoD vive en el único repo privado y el código en los otros tres.
 // Va acá y no solo en el CLAUDE.md por el mismo motivo que el resto de esta
@@ -327,7 +327,7 @@ agregar(
 agregar(
   'Definition of Done (Nivel 1, resumen): probado en staging, PR con plantilla, ' +
     'lint/typecheck/test en verde, sin console.log de debug. Completo: ' +
-    'https://github.com/Coste-AR/CosteAR-admin/blob/dev/DEFINITION-OF-DONE.md',
+    'https://github.com/costear-org/costear-admin/blob/dev/DEFINITION-OF-DONE.md',
 );
 // El reparto de tareas con git. Va en el briefing y no solo en el CLAUDE.md
 // porque es lo primero que se rompe: el briefing avisa que la copia quedó

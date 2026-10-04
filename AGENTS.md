@@ -1,6 +1,6 @@
 # AGENTS.md — cómo se trabaja en este repo
 
-Esto es `Coste-AR/CosteAR-frontend`: **el frontend React que ve el cliente**.
+Esto es `costear-org/costear-web`: **el frontend React que ve el cliente**.
 
 **Leelo entero antes de tocar nada.** Es el contrato de trabajo del repo, y está acá porque un
 agente arranca frío: si no está escrito, lo inventa.
@@ -16,7 +16,7 @@ npm run briefing
 ```
 
 Antes de leer el issue, leé la página de diez principios de
-[`CONSTITUCION.md`](https://github.com/Coste-AR/CosteAR-os/blob/dev/CONSTITUCION.md). Si el issue
+[`CONSTITUCION.md`](https://github.com/costear-org/costear-os/blob/dev/CONSTITUCION.md). Si el issue
 contradice la Constitución, el issue está mal: decilo ahí y no lo hagas. Cuando tomes una decisión
 sobre la marcha, citá en la bitácora el principio aplicado (`Constitución §N`).
 
@@ -74,7 +74,7 @@ git y de `gh` en el momento.
    **Esperar no ayuda a nadie.** Un PR que se queda abierto se desactualiza contra `dev` y empieza
    a generar conflictos con el trabajo de los demás. Si está listo, decilo.
 
-   El reparto completo de quién hace qué está en `CosteAR-os/ORQUESTACION.md`. **Ante cualquier
+   El reparto completo de quién hace qué está en `costear-os/ORQUESTACION.md`. **Ante cualquier
    contradicción entre este archivo y ese, manda ese.**
 
 ## Con qué se verifica
@@ -121,7 +121,7 @@ a mano al final es una promesa que se incumple sola.
   hayas acertado**. No es una queja: es con lo que mejoramos cómo pedimos el trabajo.
 - **Qué quedó afuera.**
 
-Formato completo: `CosteAR-os/software/templates/bitacora-sesion-agente.md`.
+Formato completo: `costear-os/software/templates/bitacora-sesion-agente.md`.
 
 ## Antes de decir que algo ya está resuelto
 
@@ -168,7 +168,7 @@ Qué hiciste, por qué, cómo probarlo, y **qué quedó afuera**. Pegá la salid
 
 ---
 
-El protocolo completo del equipo está en [`Coste-AR/CosteAR-os`](https://github.com/Coste-AR/CosteAR-os).
+El protocolo completo del equipo está en [`costear-org/costear-os`](https://github.com/costear-org/costear-os).
 
 ---
 

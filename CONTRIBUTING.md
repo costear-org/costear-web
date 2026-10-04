@@ -18,10 +18,10 @@ un detalle visual: es una decisión de negocio que el cliente toma con nuestros 
 
 | Repo | Qué es |
 | --- | --- |
-| [`CosteAR-backend`](https://github.com/Coste-AR/CosteAR-backend) | API |
-| [`CosteAR-frontend`](https://github.com/Coste-AR/CosteAR-frontend) | Este repo |
-| [`CosteAR-admin`](https://github.com/Coste-AR/CosteAR-admin) | Panel interno + **bitácora del desarrollo** |
-| [`costear-knowledge-base`](https://github.com/Coste-AR/costear-knowledge-base) | Bóveda que alimenta el RAG |
+| [`costear-backend`](https://github.com/costear-org/costear-backend) | API |
+| [`costear-web`](https://github.com/costear-org/costear-web) | Este repo |
+| [`costear-admin`](https://github.com/costear-org/costear-admin) | Panel interno + **bitácora del desarrollo** |
+| [`costear-vault`](https://github.com/costear-org/costear-vault) | Bóveda que alimenta el RAG |
 
 ---
 
@@ -30,8 +30,8 @@ un detalle visual: es una decisión de negocio que el cliente toma con nuestros 
 **Prerequisitos:** Node 22 · npm · el backend corriendo en `http://localhost:3000`.
 
 ```bash
-git clone https://github.com/Coste-AR/CosteAR-frontend.git
-cd CosteAR-frontend
+git clone https://github.com/costear-org/costear-web.git
+cd costear-web
 
 npm install              # instala dependencias y los git hooks (husky)
 cp .env.example .env     # completar
